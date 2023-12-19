@@ -2,8 +2,8 @@ import express from 'express'
 import cors from 'cors'
 import morgan from 'morgan'
 import { configDotenv } from 'dotenv'
-import { articlesRouter } from './routes/articles.js'
 configDotenv()
+import { articlesRouter } from './routes/articles.js'
 
 const app = express()
 app.use(cors())

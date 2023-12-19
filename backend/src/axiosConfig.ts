@@ -1,4 +1,6 @@
 import axios from "axios";
+import { configDotenv } from "dotenv";
+configDotenv();
 
 const instance = axios.create({
   baseURL: "https://syndication.api.eb.com/production",
