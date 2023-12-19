@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Category, categories } from "../constants";
+import { Category, categories } from "../lib/constants";
 
 export default function Home() {
   return (
