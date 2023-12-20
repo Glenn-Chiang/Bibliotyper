@@ -1,10 +1,10 @@
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { ErrorMessage } from "../components/ErrorMessage";
 import { LoadingMessage } from "../components/LoadingMessage";
-import { useGetQuotes } from "../queries/quotes-api/quotes";
-import { useGetAuthors } from "../queries/quotes-api/authors";
 import { Author } from "../lib/types";
-import { Link, useSearchParams } from "react-router-dom";
+import { useGetAuthors } from "../queries/quotes-api/authors";
+import { useGetQuotes } from "../queries/quotes-api/quotes";
 
 export default function Home() {
   const [quoteIndex, setQuoteIndex] = useState(0);
@@ -28,12 +28,15 @@ export default function Home() {
         ) : authorsQuery.isError ? (
           <ErrorMessage message="Error getting authors" />
         ) : (
-          <ul className="flex flex-col gap-2 flex-wrap">
+          <ul className="grid grid-cols-2 sm:grid-cols-3 gap-4 border-2 p-2 rounded-md">
+            <AuthorButton author={"Random"} isActive={!selectedAuthor} 
+            onClick={() => setSearchParams({})}/>
             {authors?.map((author) => (
               <AuthorButton
                 key={author.id}
-                author={author}
+                author={author.name}
                 isActive={selectedAuthor === author.name.replace(" ", "_")}
+                onClick={() => setSearchParams({author: author.name.replace(" ", "_")})}
               />
             ))}
           </ul>
@@ -52,19 +55,19 @@ export default function Home() {
 }
 
 type AuthorButtonProps = {
-  author: Author;
+  author: string;
   isActive: boolean;
+  onClick: () => void
 };
 
-const AuthorButton = ({ author, isActive }: AuthorButtonProps) => {
-  const authorPathname = author.name.replace(" ", "_");
+const AuthorButton = ({ author, isActive, onClick }: AuthorButtonProps) => {
   return (
-    <Link
-      to={`?author=${authorPathname}`}
-      className={`${isActive ? "text-sky-500" : ""}`}
+    <button
+      onClick={onClick}
+      className={`p-2 rounded ${isActive ? "text-sky-500 font-medium bg-sky-100" : "hover:bg-slate-100"}`}
     >
-      {author.name}
-    </Link>
+      {author}
+    </button>
   );
 };
 
