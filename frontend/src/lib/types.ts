@@ -1,6 +1,10 @@
-export type ArticleData = {
-  articleId: number;
-  articleTypeId: number;
-  title: string;
-  lastUpdated: string;
-};
+export type Author = {
+  id: string,
+  name: string
+}
+
+export type Quote = {
+  id: string,
+  content: string,
+  author: Author
+}
