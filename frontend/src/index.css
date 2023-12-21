@@ -6,4 +6,7 @@
     h1 {
         @apply text-xl
     }
+    button {
+        @apply p-2 rounded-md transition
+    }
 }

@@ -12,8 +12,7 @@ export default function Home() {
   const [searchParams] = useSearchParams();
   const selectedAuthor = searchParams.get("author") || undefined;
 
-  const quotesQuery = useGetQuotes(selectedAuthor, chunkSize);
-  const quotes = quotesQuery.data;
+  const {isLoading, isError, data: quotes, refetch} = useGetQuotes(selectedAuthor, chunkSize);
   const quote = quotes ? quotes[quoteIndex]?.content : "";
 
   const [inputText, setInputText] = useState("");
@@ -29,9 +28,14 @@ export default function Home() {
       </section>
 
       <p>Start typing to begin</p>
-      {quotesQuery.isLoading ? (
+      <div>
+        <button onClick={() => refetch()} className="bg-sky-100 text-sky-500">
+          Change quote
+        </button>
+      </div>
+      {isLoading ? (
         <LoadingMessage />
-      ) : quotesQuery.isError ? (
+      ) : isError ? (
         <ErrorMessage message="Error getting quotes" />
       ) : (
         <Quotebox quote={quote} inputText={inputText}/>
