@@ -8,3 +8,5 @@ export type Quote = {
   content: string,
   author: Author
 }
+
+export type Gamestate = "pre-game" | "in-game" | "post-game"

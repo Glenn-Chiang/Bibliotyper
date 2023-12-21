@@ -7,6 +7,7 @@ import { AuthorList } from "../components/AuthorList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock, faRefresh } from "@fortawesome/free-solid-svg-icons";
 import { SettingsMenu } from "../components/SettingsMenu";
+import { Gamestate } from "../lib/types";
 
 export default function Home() {
   const [searchParams] = useSearchParams();
@@ -20,6 +21,8 @@ export default function Home() {
   } = useGetQuotes(selectedAuthor);
   const quote = quotes ? quotes[0]?.content : "";
 
+  const [gameState, setGamestate] = useState<Gamestate>("pre-game")
+
   const [inputText, setInputText] = useState("");
   const handleInput: React.ChangeEventHandler<HTMLTextAreaElement> = (
     event
@@ -28,17 +31,33 @@ export default function Home() {
   };
 
   useEffect(() => {
+    if (gameState === 'pre-game' && inputText) {
+      setGamestate("in-game")
+    }
+    // Fetch new quote and reset input field when user finishes typing current quote
     if (inputText.length === quote.length) {
       refetch();
       setInputText("");
     }
-  }, [inputText, quote, refetch]);
+  }, [gameState, inputText, quote, refetch]);
+
 
   const [timeLimit, setTimeLimit] = useState(30);
   const handleTimeLimitChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
     setTimeLimit(Number(event.target.value))
   }
-  const timeLeft = timeLimit
+  
+  const [timeLeft, setTimeLeft] = useState(timeLimit)
+  useEffect(() => {
+    if (gameState !== "in-game") return;
+
+    if (timeLeft > 0) {
+      setTimeout(() => {
+        setTimeLeft(timeLeft => timeLeft - 1)
+      }, 1000)
+    }
+
+  }, [gameState, timeLeft])
 
   return (
     <main className="flex flex-col gap-4">
