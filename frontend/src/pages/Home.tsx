@@ -51,13 +51,25 @@ export default function Home() {
     setTimeLimit(Number(event.target.value));
   };
 
+  const restart = () => {
+    setGamestate("pre-game")
+    refetch()
+    setInputText("")
+    
+  }
+
+  const endGame = () => {
+    setGamestate("post-game")
+    setInputText("");
+  }
+
   return (
     <main className="flex flex-col gap-4">
       <AuthorList />
-      <SettingsMenu handleChange={handleTimeLimitChange} />
+      <SettingsMenu handleChange={handleTimeLimitChange} gameState={gameState}/>
       <div className="justify-between flex">
-        <Timer gameState={gameState} timeLimit={timeLimit} />
-        <button onClick={() => refetch()} className="bg-sky-100 text-sky-500">
+        <Timer gameState={gameState} timeLimit={timeLimit} end={endGame}/>
+        <button onClick={restart} className="bg-sky-100 text-sky-500">
           <FontAwesomeIcon icon={faRefresh} />
           Change quote
         </button>
@@ -70,7 +82,7 @@ export default function Home() {
         <Quotebox quote={quote} inputText={inputText} />
       )}
 
-      <InputField inputText={inputText} onInput={handleInput} />
+      <InputField inputText={inputText} onInput={handleInput} gameState={gameState}/>
     </main>
   );
 }
