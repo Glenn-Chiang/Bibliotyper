@@ -1,13 +1,16 @@
+import { faRefresh } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { ErrorMessage } from "../components/ErrorMessage";
-import { LoadingMessage } from "../components/LoadingMessage";
-import { useGetQuotes } from "../queries/quotes-api/quotes";
 import { AuthorList } from "../components/AuthorList";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock, faRefresh } from "@fortawesome/free-solid-svg-icons";
+import { ErrorMessage } from "../components/ErrorMessage";
+import { InputField } from "../components/InputField";
+import { LoadingMessage } from "../components/LoadingMessage";
+import { Quotebox } from "../components/Quotebox";
 import { SettingsMenu } from "../components/SettingsMenu";
 import { Gamestate } from "../lib/types";
+import { useGetQuotes } from "../queries/quotes-api/quotes";
+import { Timer } from "../components/Timer";
 
 export default function Home() {
   const [searchParams] = useSearchParams();
@@ -21,7 +24,7 @@ export default function Home() {
   } = useGetQuotes(selectedAuthor);
   const quote = quotes ? quotes[0]?.content : "";
 
-  const [gameState, setGamestate] = useState<Gamestate>("pre-game")
+  const [gameState, setGamestate] = useState<Gamestate>("pre-game");
 
   const [inputText, setInputText] = useState("");
   const handleInput: React.ChangeEventHandler<HTMLTextAreaElement> = (
@@ -31,8 +34,8 @@ export default function Home() {
   };
 
   useEffect(() => {
-    if (gameState === 'pre-game' && inputText) {
-      setGamestate("in-game")
+    if (gameState === "pre-game" && inputText) {
+      setGamestate("in-game");
     }
     // Fetch new quote and reset input field when user finishes typing current quote
     if (inputText.length === quote.length) {
@@ -41,35 +44,19 @@ export default function Home() {
     }
   }, [gameState, inputText, quote, refetch]);
 
-
   const [timeLimit, setTimeLimit] = useState(30);
-  const handleTimeLimitChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
-    setTimeLimit(Number(event.target.value))
-  }
-  
-  const [timeLeft, setTimeLeft] = useState(timeLimit)
-  useEffect(() => {
-    if (gameState !== "in-game") return;
-
-    if (timeLeft > 0) {
-      setTimeout(() => {
-        setTimeLeft(timeLeft => timeLeft - 1)
-      }, 1000)
-    }
-
-  }, [gameState, timeLeft])
+  const handleTimeLimitChange: React.ChangeEventHandler<HTMLSelectElement> = (
+    event
+  ) => {
+    setTimeLimit(Number(event.target.value));
+  };
 
   return (
     <main className="flex flex-col gap-4">
       <AuthorList />
-      <SettingsMenu
-        handleChange={handleTimeLimitChange}
-      />
+      <SettingsMenu handleChange={handleTimeLimitChange} />
       <div className="justify-between flex">
-        <span className="text-sky-500 flex gap-2 items-center p-2">
-          <FontAwesomeIcon icon={faClock}/>
-          {timeLeft}
-        </span>
+        <Timer gameState={gameState} timeLimit={timeLimit} />
         <button onClick={() => refetch()} className="bg-sky-100 text-sky-500">
           <FontAwesomeIcon icon={faRefresh} />
           Change quote
@@ -87,47 +74,3 @@ export default function Home() {
     </main>
   );
 }
-
-type InputFieldProps = {
-  inputText: string;
-  onInput: React.ChangeEventHandler<HTMLTextAreaElement>;
-};
-const InputField = ({ inputText, onInput }: InputFieldProps) => {
-  return (
-    <textarea
-      value={inputText}
-      autoFocus
-      onChange={onInput}
-      className="border-2 shadow p-2 rounded-md"
-    />
-  );
-};
-
-type QuoteboxProps = {
-  quote: string;
-  inputText: string;
-};
-
-const Quotebox = ({ quote, inputText }: QuoteboxProps) => {
-  const quoteChars = quote.split("");
-
-  return (
-    <p className="rounded-md p-4 bg-slate-100 text-slate-600 text-lg">
-      {quoteChars.map((char, index) => (
-        <Letter key={index} quoteChar={char} inputChar={inputText[index]} />
-      ))}
-    </p>
-  );
-};
-
-type LetterProps = {
-  quoteChar: string;
-  inputChar: string | undefined;
-};
-const Letter = ({ quoteChar, inputChar }: LetterProps) => {
-  const grade = inputChar === quoteChar ? 2 : inputChar ? 1 : 0;
-  const gradeColors = ["text-slate-500", "text-rose-500", "text-teal-500"];
-  const color = gradeColors[grade];
-
-  return <span className={color}>{quoteChar}</span>;
-};
