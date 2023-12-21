@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ErrorMessage } from "../components/ErrorMessage";
 import { LoadingMessage } from "../components/LoadingMessage";
 import { useGetQuotes } from "../queries/quotes-api/quotes";
 import { AuthorList } from "../components/AuthorList";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRefresh } from "@fortawesome/free-solid-svg-icons";
 
 export default function Home() {
   const [quoteIndex, setQuoteIndex] = useState(0);
@@ -12,13 +14,27 @@ export default function Home() {
   const [searchParams] = useSearchParams();
   const selectedAuthor = searchParams.get("author") || undefined;
 
-  const {isLoading, isError, data: quotes, refetch} = useGetQuotes(selectedAuthor, chunkSize);
+  const {
+    isLoading,
+    isError,
+    data: quotes,
+    refetch,
+  } = useGetQuotes(selectedAuthor, chunkSize);
   const quote = quotes ? quotes[quoteIndex]?.content : "";
 
   const [inputText, setInputText] = useState("");
-  const handleInput: React.ChangeEventHandler<HTMLTextAreaElement> = (event) => {
-    setInputText(event.target.value)
-  }
+  const handleInput: React.ChangeEventHandler<HTMLTextAreaElement> = (
+    event
+  ) => {
+    setInputText(event.target.value);
+  };
+
+  useEffect(() => {
+    if (inputText.length === quote.length) {
+      refetch();
+      setInputText("");
+    }
+  }, [inputText, quote, refetch]);
 
   return (
     <main className="flex flex-col gap-4">
@@ -30,6 +46,7 @@ export default function Home() {
       <p>Start typing to begin</p>
       <div>
         <button onClick={() => refetch()} className="bg-sky-100 text-sky-500">
+          <FontAwesomeIcon icon={faRefresh} />
           Change quote
         </button>
       </div>
@@ -38,20 +55,22 @@ export default function Home() {
       ) : isError ? (
         <ErrorMessage message="Error getting quotes" />
       ) : (
-        <Quotebox quote={quote} inputText={inputText}/>
+        <Quotebox quote={quote} inputText={inputText} />
       )}
 
-      <InputField onInput={handleInput}/>
+      <InputField inputText={inputText} onInput={handleInput} />
     </main>
   );
 }
 
 type InputFieldProps = {
+  inputText: string;
   onInput: React.ChangeEventHandler<HTMLTextAreaElement>;
 };
-const InputField = ({ onInput }: InputFieldProps) => {
+const InputField = ({ inputText, onInput }: InputFieldProps) => {
   return (
     <textarea
+      value={inputText}
       autoFocus
       onChange={onInput}
       className="border-2 shadow p-2 rounded-md"
@@ -65,26 +84,25 @@ type QuoteboxProps = {
 };
 
 const Quotebox = ({ quote, inputText }: QuoteboxProps) => {
-  const quoteChars = quote.split("")
+  const quoteChars = quote.split("");
 
   return (
-    <section className="rounded-md p-4 bg-slate-100 text-slate-600">
-      {quoteChars.map((char, index) => <Letter key={index} quoteChar={char} inputChar={inputText[index]}/>)}
-    </section>
+    <p className="rounded-md p-4 bg-slate-100 text-slate-600 text-lg">
+      {quoteChars.map((char, index) => (
+        <Letter key={index} quoteChar={char} inputChar={inputText[index]} />
+      ))}
+    </p>
   );
 };
 
-
 type LetterProps = {
-  quoteChar: string,
-  inputChar: string | undefined,
-}
-const Letter = ({quoteChar, inputChar}: LetterProps) => {
-  const grade = inputChar === quoteChar ? 2 : inputChar ? 1 : 0
-  const gradeColors = ["text-slate-500", "text-rose-500", "text-teal-500"]
-  const color = gradeColors[grade]
+  quoteChar: string;
+  inputChar: string | undefined;
+};
+const Letter = ({ quoteChar, inputChar }: LetterProps) => {
+  const grade = inputChar === quoteChar ? 2 : inputChar ? 1 : 0;
+  const gradeColors = ["text-slate-500", "text-rose-500", "text-teal-500"];
+  const color = gradeColors[grade];
 
-  return (
-    <span className={color}>{quoteChar}</span>
-  )
-}
+  return <span className={color}>{quoteChar}</span>;
+};
