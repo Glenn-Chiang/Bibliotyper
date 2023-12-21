@@ -5,12 +5,10 @@ import { LoadingMessage } from "../components/LoadingMessage";
 import { useGetQuotes } from "../queries/quotes-api/quotes";
 import { AuthorList } from "../components/AuthorList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faRefresh } from "@fortawesome/free-solid-svg-icons";
+import { faClock, faRefresh } from "@fortawesome/free-solid-svg-icons";
+import { SettingsMenu } from "../components/SettingsMenu";
 
 export default function Home() {
-  const [quoteIndex, setQuoteIndex] = useState(0);
-  const chunkSize = 5;
-
   const [searchParams] = useSearchParams();
   const selectedAuthor = searchParams.get("author") || undefined;
 
@@ -19,8 +17,8 @@ export default function Home() {
     isError,
     data: quotes,
     refetch,
-  } = useGetQuotes(selectedAuthor, chunkSize);
-  const quote = quotes ? quotes[quoteIndex]?.content : "";
+  } = useGetQuotes(selectedAuthor);
+  const quote = quotes ? quotes[0]?.content : "";
 
   const [inputText, setInputText] = useState("");
   const handleInput: React.ChangeEventHandler<HTMLTextAreaElement> = (
@@ -36,15 +34,23 @@ export default function Home() {
     }
   }, [inputText, quote, refetch]);
 
+  const [timeLimit, setTimeLimit] = useState(30);
+  const handleTimeLimitChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
+    setTimeLimit(Number(event.target.value))
+  }
+  const timeLeft = timeLimit
+
   return (
     <main className="flex flex-col gap-4">
-      <section className="flex flex-col gap-4">
-        <h1>Authors</h1>
-        <AuthorList />
-      </section>
-
-      <p>Start typing to begin</p>
-      <div>
+      <AuthorList />
+      <SettingsMenu
+        handleChange={handleTimeLimitChange}
+      />
+      <div className="justify-between flex">
+        <span className="text-sky-500 flex gap-2 items-center p-2">
+          <FontAwesomeIcon icon={faClock}/>
+          {timeLeft}
+        </span>
         <button onClick={() => refetch()} className="bg-sky-100 text-sky-500">
           <FontAwesomeIcon icon={faRefresh} />
           Change quote
