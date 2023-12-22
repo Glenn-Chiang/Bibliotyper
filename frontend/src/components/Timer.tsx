@@ -12,10 +12,12 @@ type TimerProps = {
 export const Timer = ({ timeLimit, gameState, end }: TimerProps) => {
   const [timeLeft, setTimeLeft] = useState(timeLimit);
 
-  // Change initial timeLeft when time limit is changed
+  // Reset timer
   useEffect(() => {
-    setTimeLeft(timeLimit)
-  }, [timeLimit])
+    if (gameState === "pre-game") {
+      setTimeLeft(timeLimit)
+    }
+  }, [gameState, timeLimit])
 
   useEffect(() => {
     if (timeLeft === 0) {

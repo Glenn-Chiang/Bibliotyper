@@ -11,6 +11,7 @@ import { SettingsMenu } from "../components/SettingsMenu";
 import { Gamestate } from "../lib/types";
 import { useGetQuotes } from "../queries/quotes-api/quotes";
 import { Timer } from "../components/Timer";
+import { ScoreCard } from "../components/ScoreCard";
 
 export default function Home() {
   const [searchParams] = useSearchParams();
@@ -44,7 +45,7 @@ export default function Home() {
     }
   }, [gameState, inputText, quote, refetch]);
 
-  const [timeLimit, setTimeLimit] = useState(30);
+  const [timeLimit, setTimeLimit] = useState(5);
   const handleTimeLimitChange: React.ChangeEventHandler<HTMLSelectElement> = (
     event
   ) => {
@@ -52,37 +53,47 @@ export default function Home() {
   };
 
   const restart = () => {
-    setGamestate("pre-game")
-    refetch()
-    setInputText("")
-    
-  }
+    setGamestate("pre-game");
+    refetch();
+    setInputText("");
+  };
 
   const endGame = () => {
-    setGamestate("post-game")
-    setInputText("");
-  }
+    setGamestate("post-game");
+  };
 
   return (
     <main className="flex flex-col gap-4">
       <AuthorList />
-      <SettingsMenu handleChange={handleTimeLimitChange} gameState={gameState}/>
-      <div className="justify-between flex">
-        <Timer gameState={gameState} timeLimit={timeLimit} end={endGame}/>
+      <SettingsMenu
+        handleChange={handleTimeLimitChange}
+        gameState={gameState}
+      />
+      <div className="flex gap-4">
+        <Timer gameState={gameState} timeLimit={timeLimit} end={endGame} />
         <button onClick={restart} className="bg-sky-100 text-sky-500">
           <FontAwesomeIcon icon={faRefresh} />
-          Change quote
+          Restart
         </button>
       </div>
-      {isLoading ? (
-        <LoadingMessage />
-      ) : isError ? (
-        <ErrorMessage message="Error getting quotes" />
-      ) : (
-        <Quotebox quote={quote} inputText={inputText} />
-      )}
 
-      <InputField inputText={inputText} onInput={handleInput} gameState={gameState}/>
+      {gameState !== "post-game" &&
+        (isLoading ? (
+          <LoadingMessage />
+        ) : isError ? (
+          <ErrorMessage message="Error getting quotes" />
+        ) : (
+          <Quotebox quote={quote} inputText={inputText} />
+        ))}
+
+      {gameState !== "post-game" && (
+        <InputField
+          inputText={inputText}
+          onInput={handleInput}
+          gameState={gameState}
+        />
+      )}
+      {gameState === "post-game" && <ScoreCard />}
     </main>
   );
 }
