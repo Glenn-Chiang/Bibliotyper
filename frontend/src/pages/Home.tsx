@@ -34,6 +34,7 @@ export default function Home() {
     setInputText(event.target.value);
   };
 
+  // Start game when user starts typing
   useEffect(() => {
     if (gameState === "pre-game" && inputText) {
       setGamestate("in-game");
@@ -45,16 +46,16 @@ export default function Home() {
     }
   }, [gameState, inputText, quote, refetch]);
 
-  const [timeLimit, setTimeLimit] = useState(5);
+  const [timeLimit, setTimeLimit] = useState(15);
   const handleTimeLimitChange: React.ChangeEventHandler<HTMLSelectElement> = (
     event
   ) => {
     setTimeLimit(Number(event.target.value));
   };
 
-  const restart = () => {
+  const restart = async () => {
+    await refetch();
     setGamestate("pre-game");
-    refetch();
     setInputText("");
   };
 
@@ -64,7 +65,7 @@ export default function Home() {
 
   return (
     <main className="flex flex-col gap-4">
-      <AuthorList />
+      <AuthorList disabled={gameState !== "pre-game"}/>
       <SettingsMenu
         handleChange={handleTimeLimitChange}
         gameState={gameState}

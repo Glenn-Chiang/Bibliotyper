@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 type TimerProps = {
   gameState: Gamestate;
   timeLimit: number;
-  end: () => void
+  end: () => void;
 };
 
 export const Timer = ({ timeLimit, gameState, end }: TimerProps) => {
@@ -15,25 +15,24 @@ export const Timer = ({ timeLimit, gameState, end }: TimerProps) => {
   // Reset timer
   useEffect(() => {
     if (gameState === "pre-game") {
-      setTimeLeft(timeLimit)
+      setTimeLeft(timeLimit);
     }
-  }, [gameState, timeLimit])
+  }, [gameState, timeLimit]);
 
+  // End game when timer reaches 0
   useEffect(() => {
-    if (timeLeft === 0) {
+    if (gameState === "in-game" && timeLeft === 0) {
       end()
     }
-  }, [timeLeft, end])
+  }, [timeLeft, end, gameState])
 
   // Decrement timer
   useEffect(() => {
-    if (gameState !== "in-game") return;
-
-    if (timeLeft > 0) {
+    if (gameState === "in-game" && timeLeft > 0) {
       setTimeout(() => {
         setTimeLeft((timeLeft) => timeLeft - 1);
       }, 1000);
-    } 
+    }
   }, [gameState, timeLeft]);
 
   return (
