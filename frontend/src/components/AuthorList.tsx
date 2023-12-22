@@ -5,7 +5,6 @@ import { LoadingMessage } from "./LoadingMessage";
 
 export const AuthorList = ({ disabled }: { disabled: boolean }) => {
   const { isLoading, isError, data: authors } = useGetAuthors();
-  console.log(authors);
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedAuthor = searchParams.get("author") || undefined;
 
