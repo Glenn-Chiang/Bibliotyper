@@ -4,7 +4,7 @@ import { instance as axios } from "./axiosConfig";
 
 export const useGetUserScores = (userId: number, time?: number) => {
   return useQuery({
-    queryKey: ["users", userId, "scores", time],
+    queryKey: ["users", userId, time, "scores"],
     queryFn: async () => {
       const res = await axios.get(`/users/${userId}/scores`, {
         params: {
@@ -28,7 +28,7 @@ export const useSaveScore = () => {
       return score
     },
     onSuccess: async (score: Score) => {
-      await queryClient.invalidateQueries(["users", score.userId, "scores", score.time])
+      await queryClient.invalidateQueries(["users", score.userId, score.time])
     }
   })
 
@@ -36,7 +36,7 @@ export const useSaveScore = () => {
 
 export const useGetUserBest = (userId: number, time: number) => {
   return useQuery({
-    queryKey: ["users", userId, "highScore", time],
+    queryKey: ["users", userId, time, "highScore"],
     queryFn: async () => {
       const res = await axios.get(`/users/${userId}/highScore`, {
         params: {

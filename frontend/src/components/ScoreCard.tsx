@@ -17,7 +17,7 @@ export const ScoreCard = ({
   totalKeystrokes,
   correctKeystrokes,
   time,
-  author
+  author,
 }: ScoreCardProps) => {
   const cpm = correctKeystrokes / (time / 60);
   const wpm = Math.round(cpm / 5);
@@ -25,18 +25,19 @@ export const ScoreCard = ({
 
   // TODO: save score and get personal best
   const userId = useCurrentUser().id;
-  const { isLoading, isError, data: highScore } = useGetUserBest(userId, time);
 
   const [saved, setSaved] = useState(false);
   const saveScore = useSaveScore();
   const handleSave = () => {
     saveScore.mutate({
-      userId, time, author: author || "Random", wpm, accuracy
+      userId,
+      time,
+      author: author || "Random",
+      wpm,
+      accuracy,
     });
     setSaved(true);
   };
-
-  console.log(highScore)
 
   return (
     <div className="flex flex-col sm:flex-row gap-2">
@@ -56,28 +57,44 @@ export const ScoreCard = ({
           </button>
         )}
       </section>
-
       <section className="sm:w-1/2 flex justify-center items-center flex-col gap-2 rounded-md p-4 border-2 text-slate-500">
         <span className="flex gap-2 items-center">
           <FontAwesomeIcon icon={faTrophy} className="text-amber-400" />
           Personal best
         </span>
-        {isLoading ? (
-          <LoadingMessage />
-        ) : isError ? (
-          <ErrorMessage message="Error getting high score" />
-        ) : highScore?.wpm ? (
-          <div className="text-2xl text-sky-500">
-            <span>{highScore.wpm}</span> WPM
-          </div>
-        ) : (
-          <p className="italic">No scores recorded for this time setting</p>
-        )}
-        {
-          highScore.wpm && wpm > highScore.wpm && 
-          <p className="rounded p-2 bg-teal-100 text-teal-500">Congratulations! You beat your personal best!</p>
-        }
+        <PersonalBest wpm={wpm} time={time} />
       </section>
     </div>
+  );
+};
+
+const PersonalBest = ({ wpm, time }: { wpm: number; time: number }) => {
+  const userId = useCurrentUser().id;
+  const { isLoading, isError, data: highScore } = useGetUserBest(userId, time);
+
+  if (isLoading) {
+    return <LoadingMessage />;
+  }
+
+  if (isError) {
+    return <ErrorMessage message="Error getting high score" />;
+  }
+  return (
+    <>
+      {highScore.wpm && (
+        <div className="text-2xl text-sky-500">
+          <span>{highScore.wpm}</span> WPM
+        </div>
+      )}
+      {highScore.wpm && wpm > highScore.wpm && (
+        <p className="rounded p-2 bg-teal-100 text-teal-500">
+          Congratulations! You beat your personal best!
+        </p>
+      )}
+
+      {!highScore.wpm && (
+        <p className="italic">No scores recorded for this time setting</p>
+      )}
+    </>
   );
 };
