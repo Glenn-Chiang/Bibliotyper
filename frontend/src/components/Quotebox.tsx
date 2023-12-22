@@ -3,9 +3,10 @@ import { useCallback, useEffect, useState } from "react";
 type QuoteboxProps = {
   quote: string;
   startGame: () => void
+  refetch: () => void
 };
 
-export const Quotebox = ({ quote, startGame }: QuoteboxProps) => {
+export const Quotebox = ({ quote, startGame, refetch }: QuoteboxProps) => {
   const [inputText, setInputText] = useState("")
 
   const quoteChars = quote.split("");
@@ -22,7 +23,6 @@ export const Quotebox = ({ quote, startGame }: QuoteboxProps) => {
       setInputText(inputText => inputText.slice(0, inputText.length - 1))
     // Add character
     } else {
-
       setInputText(inputText => inputText + event.key)
     }
   }, [startGame])
@@ -34,9 +34,17 @@ export const Quotebox = ({ quote, startGame }: QuoteboxProps) => {
     }
   }, [handleKeydown])
 
+  // When user finishes typing current quote, refetch quote
+  useEffect(() => {
+    if (inputText.length === quote.length) {
+      refetch()
+      setInputText("")
+    }
+  }, [inputText, quote, refetch])
+
   // Reset input when quote changes
   useEffect(() => {
-    setInputText("")
+      setInputText("");
   }, [quote])
 
   return (

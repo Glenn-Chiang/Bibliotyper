@@ -51,7 +51,8 @@ export default function Home() {
 
   console.log(gameState, timeLeft)
 
-  const restart = async () => {
+  const handleRestart: React.MouseEventHandler<HTMLButtonElement> = async (event) => {
+    event.currentTarget.blur() // onfocus button
     await refetch();
     setGamestate("pre-game")
     setTimeLeft(timeLimit);
@@ -69,7 +70,7 @@ export default function Home() {
           <FontAwesomeIcon icon={faClock} />
           {timeLeft}
         </span>
-        <button onClick={restart} className="bg-sky-100 text-sky-500">
+        <button onClick={handleRestart} className="bg-sky-100 text-sky-500">
           <FontAwesomeIcon icon={faRefresh} />
           Restart
         </button>
@@ -81,7 +82,7 @@ export default function Home() {
         ) : isError ? (
           <ErrorMessage message="Error getting quotes" />
         ) : (
-          <Quotebox quote={quote} startGame={() => setGamestate("in-game")}/>
+          <Quotebox quote={quote} startGame={() => setGamestate("in-game")} refetch={() => refetch()}/>
         ))}
 
       {gameState === "post-game" && <ScoreCard />}
