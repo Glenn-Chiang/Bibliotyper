@@ -11,7 +11,7 @@ scoresRouter.get("/users/:userId/scores", async (req, res, next) => {
   const sort =
     sortParam === "newest" || sortParam === "highest" ? sortParam : undefined;
 
-  if (!userId || typeof userId !== "string") {
+  if (!userId || typeof userId !== "number") {
     return res.status(400).json("Invalid userId");
   }
   if (time && typeof time !== "number") {
