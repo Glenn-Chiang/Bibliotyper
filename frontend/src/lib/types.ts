@@ -10,3 +10,16 @@ export type Quote = {
 }
 
 export type Gamestate = "pre-game" | "in-game" | "post-game"
+
+export interface ScorePayload {
+  userId: number;
+  time: number;
+  author: string;
+  wpm: number;
+  accuracy: number;  
+}
+
+export interface Score extends ScorePayload  {
+  id: string,
+  dateAdded: string,
+}
