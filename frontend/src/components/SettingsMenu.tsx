@@ -11,7 +11,7 @@ export const SettingsMenu = ({
   gameState,
   handleChange,
 }: SettingsMenuProps) => {
-  const timeOptions = [15, 30, 60, 120];
+  const timeOptions = [15, 30, 60, 120, 300];
   const disabled = gameState != "pre-game"
 
   return (
