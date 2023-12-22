@@ -12,28 +12,29 @@ type TimerProps = {
 export const Timer = ({ timeLimit, gameState, end }: TimerProps) => {
   const [timeLeft, setTimeLeft] = useState(timeLimit);
 
-    // Reset timer
-    useEffect(() => {
-      if (gameState === "pre-game") {
-        setTimeLeft(timeLimit);
-      }
-    }, [gameState, timeLimit]);
+  // Reset timeLeft when timeLimit changes
+  useEffect(() => {
+    if (gameState === "pre-game") {
+      setTimeLeft(timeLimit);
+    }
+  }, [gameState, timeLimit]);
 
-    // End game when timer reaches 0
-    useEffect(() => {
-      if (gameState === "in-game" && timeLeft === 0) {
-        end()
-      }
-    }, [timeLeft, end, gameState])
+  // End game when timer reaches 0
+  useEffect(() => {
+    if (gameState === "in-game" && timeLeft === 0) {
+      end();
+    }
+  }, [timeLeft, end, gameState]);
 
-    // Decrement timer
-    useEffect(() => {
-      if (gameState === "in-game" && timeLeft > 0) {
-        setTimeout(() => {
-          setTimeLeft((timeLeft) => timeLeft - 1);
-        }, 1000);
-      }
-    }, [gameState, timeLeft]);
+  // Decrement timer
+  useEffect(() => {
+    if (gameState !== "in-game") return
+    
+    const timer = setInterval(() => {
+      setTimeLeft((timeLeft) => timeLeft - 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [gameState]);
 
   return (
     <span className="text-sky-500 flex gap-2 items-center p-2">
