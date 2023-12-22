@@ -11,6 +11,13 @@ scoresRouter.get("/users/:userId/scores", async (req, res, next) => {
   const sort =
     sortParam === "newest" || sortParam === "highest" ? sortParam : undefined;
 
+  if (!userId || typeof userId !== "string") {
+    return res.status(400).json("Invalid userId");
+  }
+  if (time && typeof time !== "number") {
+    return res.status(400).json("Invalid time");
+  }
+
   try {
     const scores = await prisma.score.findMany({
       where: {
@@ -32,10 +39,52 @@ scoresRouter.get("/users/:userId/scores", async (req, res, next) => {
   }
 });
 
+scoresRouter.post("/users/:userId/scores", async (req, res, next) => {
+  const userId = Number(req.params.userId);
+  const { wpm, accuracy, author, time } = req.body;
+
+  if (
+    !userId ||
+    typeof userId !== "number" ||
+    !wpm ||
+    typeof wpm !== "number" ||
+    !accuracy ||
+    typeof accuracy !== "number" ||
+    !author ||
+    typeof author !== "string" ||
+    !time ||
+    typeof time !== "number"
+  ) {
+    return res.status(400).json("Invalid score data");
+  }
+  try {
+    const score = await prisma.score.create({
+      data: {
+        userId,
+        time,
+        author,
+        wpm,
+        accuracy,
+      },
+    });
+
+    res.json(score);
+  } catch (error) {
+    next(error);
+  }
+});
+
 // Get user's high score under the selected timeLimit
 scoresRouter.get("/users/:userId/highScore", async (req, res, next) => {
   const userId = Number(req.params.userId);
   const time = req.query.time ? Number(req.query.time) : undefined;
+
+  if (!userId || typeof userId !== "string") {
+    return res.status(400).json("Invalid userId");
+  }
+  if (time && typeof time !== "number") {
+    return res.status(400).json("Invalid time");
+  }
 
   try {
     const highScore = (
@@ -59,6 +108,10 @@ scoresRouter.get("/users/:userId/highScore", async (req, res, next) => {
 scoresRouter.get("/scores", async (req, res, next) => {
   const time = req.query.time ? Number(req.query.time) : undefined;
 
+  if (time && typeof time !== "number") {
+    return res.status(400).json("Invalid time");
+  }
+
   try {
     const scores = await prisma.score.findMany({
       where: {
@@ -71,10 +124,10 @@ scoresRouter.get("/scores", async (req, res, next) => {
         wpm: "desc",
       },
     });
-  
-    res.json(scores)
+
+    res.json(scores);
   } catch (error) {
-    next(error)
+    next(error);
   }
 });
 
