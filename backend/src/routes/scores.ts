@@ -123,6 +123,7 @@ scoresRouter.get("/scores", async (req, res, next) => {
       orderBy: {
         wpm: "desc",
       },
+      take: 20
     });
 
     res.json(scores);
