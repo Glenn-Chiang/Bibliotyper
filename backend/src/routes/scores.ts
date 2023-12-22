@@ -79,7 +79,7 @@ scoresRouter.get("/users/:userId/highScore", async (req, res, next) => {
   const userId = Number(req.params.userId);
   const time = req.query.time ? Number(req.query.time) : undefined;
 
-  if (!userId || typeof userId !== "string") {
+  if (!userId || typeof userId !== "number") {
     return res.status(400).json("Invalid userId");
   }
   if (time && typeof time !== "number") {

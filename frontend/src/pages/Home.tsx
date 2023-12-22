@@ -87,6 +87,7 @@ export default function Home() {
           totalKeystrokes={totalKeystrokes}
           correctKeystrokes={correctKeystrokes}
           time={timeLimit}
+          author={selectedAuthor}
         />
       )}
     </main>
