@@ -16,7 +16,7 @@ export const AuthorList = ({ disabled }: { disabled: boolean }) => {
   }
 
   return (
-    <ul className="grid grid-cols-2 sm:grid-cols-3 gap-4 border-2 p-2 rounded-md">
+      <ul className="grid grid-cols-2 sm:grid-cols-3 gap-4 border-2 p-2 rounded-md">
       <AuthorButton
         disabled={disabled}
         author={"Random"}
@@ -56,8 +56,12 @@ const AuthorButton = ({
       disabled={disabled}
       onClick={onClick}
       className={`p-2 rounded ${
-        isActive ? "text-sky-500 font-medium bg-sky-100" : "hover:bg-slate-100"
-      } ${disabled && " cursor-not-allowed"}`}
+        isActive
+          ? "text-sky-500 font-medium bg-sky-100"
+          : disabled
+          ? ""
+          : "hover:bg-slate-100"
+      } `}
     >
       {author}
     </button>

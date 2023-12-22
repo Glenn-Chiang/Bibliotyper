@@ -1,4 +1,4 @@
-import { faClock, faGear } from "@fortawesome/free-solid-svg-icons";
+import { faClock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Gamestate } from "../lib/types";
 
@@ -16,10 +16,6 @@ export const SettingsMenu = ({
 
   return (
     <menu className="rounded-md p-2 border-2 flex flex-col gap-2">
-      <span className="flex gap-2 items-center">
-        <FontAwesomeIcon icon={faGear} />
-        Settings
-      </span>
       <div className="flex gap-2 items-center">
         <label className="text-sky-500 flex gap-2 items-center">
           <FontAwesomeIcon icon={faClock} />

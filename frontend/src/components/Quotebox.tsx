@@ -4,12 +4,14 @@ type QuoteboxProps = {
   quote: string;
   startGame: () => void;
   refetch: () => void;
+  addKeystroke: () => void;
+  addCorrectKeystroke: () => void
 };
 
-export const Quotebox = ({ quote, startGame, refetch }: QuoteboxProps) => {
+export const Quotebox = ({ quote, startGame, refetch, addCorrectKeystroke, addKeystroke }: QuoteboxProps) => {
   const [inputText, setInputText] = useState("");
-
   const quoteChars = quote.split("");
+  const [cursorIdx, setCursorIdx] = useState(0);
 
   const handleKeydown = useCallback(
     (event: KeyboardEvent) => {
@@ -22,12 +24,19 @@ export const Quotebox = ({ quote, startGame, refetch }: QuoteboxProps) => {
       // Backspace
       if (event.key === "Backspace") {
         setInputText((inputText) => inputText.slice(0, inputText.length - 1));
-        // Add character
+        setCursorIdx(prev => prev > 0 ? prev - 1 : 0)
+      // Add character
       } else {
         setInputText((inputText) => inputText + event.key);
+        setCursorIdx(prev => prev + 1)
+        // correct
+        if (quote[cursorIdx] === event.key) {
+          addCorrectKeystroke()
+        }
+        addKeystroke()
       }
     },
-    [startGame]
+    [startGame, quote, cursorIdx, addCorrectKeystroke, addKeystroke]
   );
 
   useEffect(() => {
@@ -42,12 +51,14 @@ export const Quotebox = ({ quote, startGame, refetch }: QuoteboxProps) => {
     if (inputText.length === quote.length) {
       refetch();
       setInputText("");
+      setCursorIdx(0)
     }
   }, [inputText, quote, refetch]);
 
-  // Reset input when quote changes
+  // Reset input when quote changes due to restart
   useEffect(() => {
     setInputText("");
+    setCursorIdx(0)
   }, [quote]);
 
   return (

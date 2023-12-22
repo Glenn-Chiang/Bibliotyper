@@ -26,12 +26,13 @@ export default function Home() {
 
   const [gameState, setGamestate] = useState<Gamestate>("pre-game");
   const [timeLimit, setTimeLimit] = useState(15);
+  const [totalKeystrokes, setTotalKeystrokes] = useState(0);
+  const [correctKeystrokes, setCorrectKeystrokes] = useState(0);
 
   const handleTimeLimitChange: React.ChangeEventHandler<HTMLSelectElement> = (
     event
   ) => {
-    const newTimeLimit = Number(event.target.value);
-    setTimeLimit(newTimeLimit);
+    setTimeLimit(Number(event.target.value));
   };
 
   const handleRestart: React.MouseEventHandler<HTMLButtonElement> = async (
@@ -40,10 +41,13 @@ export default function Home() {
     event.currentTarget.blur(); // onfocus button
     await refetch();
     setGamestate("pre-game");
+    setTotalKeystrokes(0);
+    setCorrectKeystrokes(0);
   };
 
   return (
     <main className="flex flex-col gap-4">
+      <p className="px-2">Select an author</p>
       <AuthorList disabled={gameState !== "pre-game"} />
       <SettingsMenu
         handleChange={handleTimeLimitChange}
@@ -73,10 +77,18 @@ export default function Home() {
             quote={quote}
             startGame={() => setGamestate("in-game")}
             refetch={() => refetch()}
+            addKeystroke={() => setTotalKeystrokes((prev) => prev + 1)}
+            addCorrectKeystroke={() => setCorrectKeystrokes((prev) => prev + 1)}
           />
         ))}
 
-      {gameState === "post-game" && <ScoreCard />}
+      {gameState === "post-game" && (
+        <ScoreCard
+          totalKeystrokes={totalKeystrokes}
+          correctKeystrokes={correctKeystrokes}
+          time={timeLimit}
+        />
+      )}
     </main>
   );
 }
