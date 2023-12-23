@@ -1,3 +1,8 @@
+import { useContext } from "react";
+import { AuthContext } from "../contexts/AuthContext";
+
 export const useCurrentUser = () => {
-  return {username: "024GHOST", id: '1'}
-}
+  const userAccount = useContext(AuthContext);
+  const user = userAccount ? {id: userAccount.uid, username: userAccount.displayName} : null
+  return user
+};

@@ -1,7 +1,6 @@
 import axios from "axios";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-
-const auth = getAuth();
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
 
 export const signUp = async (email: string, password: string) => {
   try {
@@ -26,11 +25,3 @@ export const signUp = async (email: string, password: string) => {
     console.log("Error signing up:", error);
   }
 };
-
-export const signIn = async (email: string, password: string) => {
-  try {
-    await signInWithEmailAndPassword(auth, email, password)
-  } catch (error) {
-    console.log("Error signing in:", error)
-  }
-}
