@@ -2,8 +2,13 @@ import { useSearchParams } from "react-router-dom";
 import { useGetAuthors } from "../queries/quotes-api/authors";
 import { ErrorMessage } from "./ErrorMessage";
 import { LoadingMessage } from "./LoadingMessage";
+import { useContext } from "react";
+import { GameStateContext } from "../contexts/GamestateContext";
 
-export const AuthorList = ({ disabled }: { disabled: boolean }) => {
+export const AuthorList = () => {
+  const gameState = useContext(GameStateContext)
+  const disabled = gameState !== "pre-game"
+
   const { isLoading, isError, data: authors } = useGetAuthors();
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedAuthor = searchParams.get("author") || undefined;

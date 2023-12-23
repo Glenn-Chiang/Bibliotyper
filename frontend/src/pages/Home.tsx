@@ -1,4 +1,4 @@
-import { faRefresh } from "@fortawesome/free-solid-svg-icons";
+import { faClock, faRefresh } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -7,10 +7,11 @@ import { ErrorMessage } from "../components/ErrorMessage";
 import { LoadingMessage } from "../components/LoadingMessage";
 import { Quotebox } from "../components/Quotebox";
 import { ScoreCard } from "../components/ScoreCard";
-import { SettingsMenu } from "../components/SettingsMenu";
 import { Timer } from "../components/Timer";
 import { Gamestate } from "../lib/types";
 import { useGetQuotes } from "../queries/quotes-api/quotes";
+import { TimeDropdown } from "../components/TimeDropdown";
+import { GameStateContext } from "../contexts/GamestateContext";
 
 export default function Home() {
   const [searchParams] = useSearchParams();
@@ -46,50 +47,60 @@ export default function Home() {
   };
 
   return (
-    <main className="flex flex-col gap-4">
-      <p className="px-2">Select an author</p>
-      <AuthorList disabled={gameState !== "pre-game"} />
-      <SettingsMenu
-        handleChange={handleTimeLimitChange}
-        gameState={gameState}
-      />
-      <div className="flex gap-4">
-        {gameState !== "post-game" && (
-          <Timer
-            timeLimit={timeLimit}
-            gameState={gameState}
-            end={() => setGamestate("post-game")}
+    <GameStateContext.Provider value={gameState}>
+      <main className="flex flex-col gap-4">
+        <p className="px-2">Select an author</p>
+        <AuthorList/>
+
+        <menu className="rounded-md p-2 border-2 flex flex-col gap-2">
+          <div className="flex gap-2 items-center">
+            <label className="text-sky-500 flex gap-2 items-center">
+              <FontAwesomeIcon icon={faClock} />
+              Time limit
+            </label>
+            <TimeDropdown handleChange={handleTimeLimitChange} />
+          </div>
+        </menu>
+
+        <div className="flex gap-4">
+          {gameState !== "post-game" && (
+            <Timer
+              timeLimit={timeLimit}
+              endGame={() => setGamestate("post-game")}
+            />
+          )}
+          <button onClick={handleRestart} className="bg-sky-100 text-sky-500">
+            <FontAwesomeIcon icon={faRefresh} />
+            Restart
+          </button>
+        </div>
+
+        {gameState !== "post-game" &&
+          (isLoading ? (
+            <LoadingMessage />
+          ) : isError ? (
+            <ErrorMessage message="Error getting quotes" />
+          ) : (
+            <Quotebox
+              quote={quote}
+              startGame={() => setGamestate("in-game")}
+              refetch={() => refetch()}
+              addKeystroke={() => setTotalKeystrokes((prev) => prev + 1)}
+              addCorrectKeystroke={() =>
+                setCorrectKeystrokes((prev) => prev + 1)
+              }
+            />
+          ))}
+
+        {gameState === "post-game" && (
+          <ScoreCard
+            totalKeystrokes={totalKeystrokes}
+            correctKeystrokes={correctKeystrokes}
+            time={timeLimit}
+            author={selectedAuthor}
           />
         )}
-        <button onClick={handleRestart} className="bg-sky-100 text-sky-500">
-          <FontAwesomeIcon icon={faRefresh} />
-          Restart
-        </button>
-      </div>
-
-      {gameState !== "post-game" &&
-        (isLoading ? (
-          <LoadingMessage />
-        ) : isError ? (
-          <ErrorMessage message="Error getting quotes" />
-        ) : (
-          <Quotebox
-            quote={quote}
-            startGame={() => setGamestate("in-game")}
-            refetch={() => refetch()}
-            addKeystroke={() => setTotalKeystrokes((prev) => prev + 1)}
-            addCorrectKeystroke={() => setCorrectKeystrokes((prev) => prev + 1)}
-          />
-        ))}
-
-      {gameState === "post-game" && (
-        <ScoreCard
-          totalKeystrokes={totalKeystrokes}
-          correctKeystrokes={correctKeystrokes}
-          time={timeLimit}
-          author={selectedAuthor}
-        />
-      )}
-    </main>
+      </main>
+    </GameStateContext.Provider>
   );
 }

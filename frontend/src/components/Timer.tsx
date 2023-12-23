@@ -1,15 +1,15 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Gamestate } from "../lib/types";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
-import { useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useContext, useEffect, useState } from "react";
+import { GameStateContext } from "../contexts/GamestateContext";
 
 type TimerProps = {
-  gameState: Gamestate;
   timeLimit: number;
-  end: () => void;
+  endGame: () => void;
 };
 
-export const Timer = ({ timeLimit, gameState, end }: TimerProps) => {
+export const Timer = ({ timeLimit, endGame }: TimerProps) => {
+  const gameState = useContext(GameStateContext);
   const [timeLeft, setTimeLeft] = useState(timeLimit);
 
   // Reset timeLeft when timeLimit changes
@@ -22,14 +22,14 @@ export const Timer = ({ timeLimit, gameState, end }: TimerProps) => {
   // End game when timer reaches 0
   useEffect(() => {
     if (gameState === "in-game" && timeLeft === 0) {
-      end();
+      endGame();
     }
-  }, [timeLeft, end, gameState]);
+  }, [timeLeft, endGame, gameState]);
 
   // Decrement timer
   useEffect(() => {
-    if (gameState !== "in-game") return
-    
+    if (gameState !== "in-game") return;
+
     const timer = setInterval(() => {
       setTimeLeft((timeLeft) => timeLeft - 1);
     }, 1000);

@@ -13,7 +13,9 @@ import { Score } from "../lib/types";
 
 export default function Stats() {
   const [selectedTime, setSelectedTime] = useState(30);
+
   const userId = useCurrentUser().id;
+  
   const {
     isLoading,
     isError,
@@ -46,7 +48,7 @@ const ScoreItem = ({ score }: { score: Score }) => {
     <li className="flex gap-2 flex-col items-center bg-sky-100 w-full p-4 rounded-md">
       <div className="flex gap-4 text-slate-500">
         <div><span>{new Date(score.dateAdded).toLocaleDateString()}</span></div>
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-1 items-center">
           <FontAwesomeIcon icon={faClock} />
           <span>{score.time}</span>
         </div>
@@ -56,7 +58,7 @@ const ScoreItem = ({ score }: { score: Score }) => {
         <div className="text-xl">
           <span>{score.wpm}</span> WPM
         </div>
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-1 items-center">
           <FontAwesomeIcon icon={faBullseye} /> <span>{score.accuracy}%</span>
         </div>
       </div>
