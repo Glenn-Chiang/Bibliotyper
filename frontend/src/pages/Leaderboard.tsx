@@ -13,9 +13,10 @@ export default function Leaderboard() {
   const { isLoading, isError, data: scores } = useGetTopScores(selectedTime);
 
   const currentUser = useCurrentUser();
-  const rank = scores
-    ? scores?.findIndex((score) => score.userId === currentUser.id) + 1
-    : undefined;
+  const rank =
+    scores && currentUser
+      ? scores?.findIndex((score) => score.userId === currentUser.id) + 1
+      : undefined;
 
   return (
     <main className="flex flex-col gap-4 items-center sm:w-2/3 m-auto">
@@ -53,7 +54,7 @@ export default function Leaderboard() {
 
 const HighScoreItem = ({ score, rank }: { score: HighScore; rank: number }) => {
   const currentUser = useCurrentUser();
-  const isSelf = currentUser.id === score.userId;
+  const isSelf = currentUser?.id === score.userId;
 
   return (
     <li

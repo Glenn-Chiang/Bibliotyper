@@ -3,11 +3,12 @@ import { HighScore, Score, ScorePayload } from "../../lib/types";
 import { instance as axios } from "./axiosConfig";
 
 export const useGetUserScores = (
-  userId: string,
+  userId: string | null,
   time?: number,
   sort?: string
 ) => {
   return useQuery({
+    enabled: !!userId,
     queryKey: ["users", userId, time, "scores", sort],
     queryFn: async () => {
       const res = await axios.get(`/users/${userId}/scores`, {
@@ -15,7 +16,7 @@ export const useGetUserScores = (
           time,
           sort,
         },
-      });
+      }, );
       const scores: Score[] = res.data;
       return scores;
     },
@@ -47,8 +48,9 @@ export const useSaveScore = () => {
   });
 };
 
-export const useGetUserBest = (userId: string, time: number) => {
+export const useGetUserBest = (userId: string | null, time: number) => {
   return useQuery({
+    enabled: !!userId,
     queryKey: ["users", userId, time, "highScore"],
     queryFn: async () => {
       const res = await axios.get(`/users/${userId}/highScore`, {

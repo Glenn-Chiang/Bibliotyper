@@ -23,8 +23,7 @@ export const ScoreCard = ({
   const wpm = Math.round(cpm / 5);
   const accuracy = Math.round((correctKeystrokes / totalKeystrokes) * 100);
 
-  // TODO: save score and get personal best
-  const userId = useCurrentUser().id;
+  const userId = useCurrentUser()?.id || null;
 
   const [saved, setSaved] = useState(false);
   const saveScore = useSaveScore();
@@ -69,7 +68,7 @@ export const ScoreCard = ({
 };
 
 const PersonalBest = ({ wpm, time }: { wpm: number; time: number }) => {
-  const userId = useCurrentUser().id;
+  const userId = useCurrentUser()?.id || null;
   const { isLoading, isError, data: highScore } = useGetUserBest(userId, time);
 
   if (isLoading) {

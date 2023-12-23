@@ -17,7 +17,7 @@ export default function Stats() {
   const [selectedTime, setSelectedTime] = useState(30);
   const [selectedSort, setSelectedSort] = useState("newest");
 
-  const userId = useCurrentUser().id;
+  const userId = useCurrentUser()?.id || null;
 
   const {
     isLoading,

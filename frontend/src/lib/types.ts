@@ -17,7 +17,7 @@ interface User {
 }
 
 export interface ScorePayload {
-  userId: string;
+  userId: string | null;
   time: number;
   author: string;
   wpm: number;
