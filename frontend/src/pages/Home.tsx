@@ -1,4 +1,4 @@
-import { faClock, faRefresh } from "@fortawesome/free-solid-svg-icons";
+import { faRefresh } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -7,11 +7,11 @@ import { ErrorMessage } from "../components/ErrorMessage";
 import { LoadingMessage } from "../components/LoadingMessage";
 import { Quotebox } from "../components/Quotebox";
 import { ScoreCard } from "../components/ScoreCard";
+import { TimeDropdown } from "../components/TimeDropdown";
 import { Timer } from "../components/Timer";
+import { GameStateContext } from "../contexts/GamestateContext";
 import { Gamestate } from "../lib/types";
 import { useGetQuotes } from "../queries/quotes-api/quotes";
-import { TimeDropdown } from "../components/TimeDropdown";
-import { GameStateContext } from "../contexts/GamestateContext";
 
 export default function Home() {
   const [searchParams] = useSearchParams();
@@ -50,17 +50,11 @@ export default function Home() {
     <GameStateContext.Provider value={gameState}>
       <main className="flex flex-col gap-4">
         <p className="px-2">Select an author</p>
-        <AuthorList/>
+        <AuthorList />
 
-        <menu className="rounded-md p-2 border-2 flex flex-col gap-2">
-          <div className="flex gap-2 items-center">
-            <label className="text-sky-500 flex gap-2 items-center">
-              <FontAwesomeIcon icon={faClock} />
-              Time limit
-            </label>
-            <TimeDropdown handleChange={handleTimeLimitChange} />
-          </div>
-        </menu>
+        <div className="rounded-md p-2 border-2 flex flex-col gap-2">
+          <TimeDropdown selectedValue={timeLimit} handleChange={handleTimeLimitChange} />
+        </div>
 
         <div className="flex gap-4">
           {gameState !== "post-game" && (

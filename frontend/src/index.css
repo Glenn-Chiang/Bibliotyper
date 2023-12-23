@@ -9,4 +9,7 @@
     button {
         @apply p-2 rounded-md transition flex gap-2 items-center justify-center
     }
+    select {
+        @apply p-2 rounded-md bg-slate-100
+    }
 }

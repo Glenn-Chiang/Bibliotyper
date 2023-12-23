@@ -2,13 +2,18 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Score, ScorePayload } from "../../lib/types";
 import { instance as axios } from "./axiosConfig";
 
-export const useGetUserScores = (userId: number, time?: number) => {
+export const useGetUserScores = (
+  userId: number,
+  time?: number,
+  sort?: string
+) => {
   return useQuery({
     queryKey: ["users", userId, time, "scores"],
     queryFn: async () => {
       const res = await axios.get(`/users/${userId}/scores`, {
         params: {
           time,
+          sort,
         },
       });
       const scores: Score[] = res.data;
@@ -18,21 +23,29 @@ export const useGetUserScores = (userId: number, time?: number) => {
 };
 
 export const useSaveScore = () => {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({userId, time, author, wpm, accuracy}: ScorePayload) => {
+    mutationFn: async ({
+      userId,
+      time,
+      author,
+      wpm,
+      accuracy,
+    }: ScorePayload) => {
       const res = await axios.post(`/users/${userId}/scores`, {
-        time, author, wpm, accuracy
-      })
-      const score: Score = res.data
-      return score
+        time,
+        author,
+        wpm,
+        accuracy,
+      });
+      const score: Score = res.data;
+      return score;
     },
     onSuccess: async (score: Score) => {
-      await queryClient.invalidateQueries(["users", score.userId, score.time])
-    }
-  })
-
-}
+      await queryClient.invalidateQueries(["users", score.userId, score.time]);
+    },
+  });
+};
 
 export const useGetUserBest = (userId: number, time: number) => {
   return useQuery({
