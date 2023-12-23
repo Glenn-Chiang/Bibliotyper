@@ -12,12 +12,12 @@ export type Quote = {
 export type Gamestate = "pre-game" | "in-game" | "post-game";
 
 interface User {
-  id: number;
+  id: string;
   username: string;
 }
 
 export interface ScorePayload {
-  userId: number;
+  userId: string;
   time: number;
   author: string;
   wpm: number;
@@ -31,6 +31,6 @@ export interface Score extends ScorePayload {
 
 export interface HighScore {
   user: User;
-  userId: number;
+  userId: string;
   _max: { wpm: number };
 }

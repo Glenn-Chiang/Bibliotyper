@@ -5,13 +5,13 @@ const scoresRouter = Router();
 
 // Get user's scores under the selected timeLimit, ordered from latest to oldest
 scoresRouter.get("/users/:userId/scores", async (req, res, next) => {
-  const userId = Number(req.params.userId);
+  const userId = req.params.userId;
   const time = req.query.time ? Number(req.query.time) : undefined;
   const sortParam = req.query.sort;
   const sort =
     sortParam === "newest" || sortParam === "highest" ? sortParam : undefined;
 
-  if (!userId || typeof userId !== "number") {
+  if (!userId || typeof userId !== "string") {
     return res.status(400).json("Invalid userId");
   }
   if (time && typeof time !== "number") {
@@ -40,12 +40,12 @@ scoresRouter.get("/users/:userId/scores", async (req, res, next) => {
 });
 
 scoresRouter.post("/users/:userId/scores", async (req, res, next) => {
-  const userId = Number(req.params.userId);
+  const userId = req.params.userId;
   const { wpm, accuracy, author, time } = req.body;
 
   if (
     !userId ||
-    typeof userId !== "number" ||
+    typeof userId !== "string" ||
     !wpm ||
     typeof wpm !== "number" ||
     !accuracy ||
@@ -76,10 +76,10 @@ scoresRouter.post("/users/:userId/scores", async (req, res, next) => {
 
 // Get user's high score under the selected timeLimit
 scoresRouter.get("/users/:userId/highScore", async (req, res, next) => {
-  const userId = Number(req.params.userId);
+  const userId = req.params.userId;
   const time = req.query.time ? Number(req.query.time) : undefined;
 
-  if (!userId || typeof userId !== "number") {
+  if (!userId || typeof userId !== "string") {
     return res.status(400).json("Invalid userId");
   }
   if (time && typeof time !== "number") {
