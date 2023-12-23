@@ -6,7 +6,7 @@ import { LoadingMessage } from "../components/LoadingMessage";
 import { HighScore } from "../lib/types";
 import { useGetTopScores } from "../queries/backend/scores";
 import { TimeDropdown } from "../components/TimeDropdown";
-import { useCurrentUser } from "../lib/auth";
+import { useCurrentUser } from "../auth/useCurrentUser";
 
 export default function Leaderboard() {
   const [selectedTime, setSelectedTime] = useState(30);
@@ -30,7 +30,7 @@ export default function Leaderboard() {
           handleChange={(event) => setSelectedTime(Number(event.target.value))}
         />
         <div className="flex gap-2 items-center">
-          <FontAwesomeIcon icon={faMedal}/>
+          <FontAwesomeIcon icon={faMedal} />
           <span>Your rank:</span>
           <span className="text-sky-500">{rank || "-"}</span>
         </div>

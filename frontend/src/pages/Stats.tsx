@@ -5,7 +5,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useGetUserScores } from "../queries/backend/scores";
-import { useCurrentUser } from "../lib/auth";
+import { useCurrentUser } from "../auth/useCurrentUser";
 import { useState } from "react";
 import { LoadingMessage } from "../components/LoadingMessage";
 import { ErrorMessage } from "../components/ErrorMessage";
@@ -31,7 +31,7 @@ export default function Stats() {
         <FontAwesomeIcon icon={faChartColumn} />
         Your Stats
       </h1>
-     
+
       <div className="w-full flex justify-between">
         <TimeDropdown
           selectedValue={selectedTime}
@@ -42,7 +42,7 @@ export default function Stats() {
           handleChange={(event) => setSelectedSort(event.target.value)}
         />
       </div>
-     
+
       {isLoading ? (
         <LoadingMessage />
       ) : isError ? (

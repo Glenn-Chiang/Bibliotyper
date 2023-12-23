@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useGetUserBest, useSaveScore } from "../queries/backend/scores";
 import { LoadingMessage } from "./LoadingMessage";
 import { ErrorMessage } from "./ErrorMessage";
-import { useCurrentUser } from "../lib/auth";
+import { useCurrentUser } from "../auth/useCurrentUser";
 import { useState } from "react";
 
 type ScoreCardProps = {
