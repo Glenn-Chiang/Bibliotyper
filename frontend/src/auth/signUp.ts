@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
 const auth = getAuth();
 
@@ -11,16 +11,13 @@ export const signUp = async (email: string, password: string) => {
       password
     );
     const user = userCredential.user;
+    const userId = user.uid;
     const username = user.displayName;
     const avatarUrl = user.photoURL;
 
     await axios.post(
       "/users",
-      {
-        email,
-        username,
-        avatarUrl,
-      },
+      { userId, email, username, avatarUrl },
       {
         baseURL: import.meta.env.VITE_API_URL,
       }
@@ -29,3 +26,11 @@ export const signUp = async (email: string, password: string) => {
     console.log("Error signing up:", error);
   }
 };
+
+export const signIn = async (email: string, password: string) => {
+  try {
+    await signInWithEmailAndPassword(auth, email, password)
+  } catch (error) {
+    console.log("Error signing in:", error)
+  }
+}
