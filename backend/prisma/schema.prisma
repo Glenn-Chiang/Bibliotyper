@@ -13,7 +13,7 @@ datasource db {
 model Score {
   id       String @id @default(uuid())
   dateAdded DateTime @default(now())
-  userId   Int
+  userId   String
   user     User   @relation(fields: [userId], references: [id])
   wpm      Int
   accuracy Int
@@ -22,8 +22,10 @@ model Score {
 }
 
 model User {
-  id     Int     @id @default(autoincrement())
+  id     String     @id
+  email String @unique
   username String @unique
+  avatarUrl String?
   dateJoined DateTime @default(now())
   scores Score[]
 }
