@@ -45,12 +45,14 @@ export default function Stats() {
         <LoadingMessage />
       ) : isError ? (
         <ErrorMessage message="Error getting scores" />
-      ) : (
+      ) : scores?.length ? (
         <ul className="flex flex-col gap-2 w-full items-center">
           {scores?.map((score) => (
             <ScoreItem key={score.id} score={score} />
           ))}
         </ul>
+      ) : (
+        <p className="text-slate-500">No scores to display</p>
       )}
     </main>
   );
@@ -67,7 +69,7 @@ const ScoreItem = ({ score }: { score: Score }) => {
           <FontAwesomeIcon icon={faClock} />
           <span>{score.time}</span>
         </div>
-        <div>{score.author}</div>
+        <div>{score.author.split("_").join(" ")}</div>
       </div>
 
       <div className="flex flex-col w-full items-center gap-4 justify-center text-sky-500">

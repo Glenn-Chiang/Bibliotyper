@@ -113,20 +113,35 @@ scoresRouter.get("/scores", async (req, res, next) => {
   }
 
   try {
-    const scores = await prisma.score.findMany({
+    const scores = await prisma.score.groupBy({
+      by: "userId",
+      _max: {
+        wpm: true,
+      },
+      
       where: {
         time,
       },
-      include: {
-        user: true,
-      },
       orderBy: {
-        wpm: "desc",
+        _max: {
+          wpm: "desc",
+        },
       },
-      take: 20
     });
 
-    res.json(scores);
+    // Attach related users
+    const scoresWithUsers = await Promise.all(
+      scores.map(async (score) => {
+        const user = await prisma.user.findUnique({
+          where: {
+            id: score.userId
+          }
+        })
+        return {...score, user}
+      })
+    )
+
+    res.json(scoresWithUsers);
   } catch (error) {
     next(error);
   }

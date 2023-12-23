@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { Score, ScorePayload } from "../../lib/types";
+import { HighScore, Score, ScorePayload } from "../../lib/types";
 import { instance as axios } from "./axiosConfig";
 
 export const useGetUserScores = (
@@ -71,7 +71,7 @@ export const useGetTopScores = (time: number) => {
           time,
         },
       });
-      const scores: Score[] = res.data;
+      const scores: HighScore[] = res.data;
       return scores;
     },
   });
