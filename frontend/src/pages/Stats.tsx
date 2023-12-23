@@ -26,7 +26,7 @@ export default function Stats() {
   } = useGetUserScores(userId, selectedTime, selectedSort);
 
   return (
-    <main className="flex flex-col gap-4 items-center sm:w-1/2 m-auto">
+    <main className="flex flex-col gap-4 items-center sm:w-2/3 m-auto">
       <h1>
         <FontAwesomeIcon icon={faChartColumn} />
         Your Stats

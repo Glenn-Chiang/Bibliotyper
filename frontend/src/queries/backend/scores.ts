@@ -8,7 +8,7 @@ export const useGetUserScores = (
   sort?: string
 ) => {
   return useQuery({
-    queryKey: ["users", userId, time, "scores"],
+    queryKey: ["users", userId, time, "scores", sort],
     queryFn: async () => {
       const res = await axios.get(`/users/${userId}/scores`, {
         params: {
