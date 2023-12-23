@@ -1,4 +1,4 @@
-import { faTrophy } from "@fortawesome/free-solid-svg-icons";
+import { faMedal, faTrophy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { ErrorMessage } from "../components/ErrorMessage";
@@ -6,10 +6,16 @@ import { LoadingMessage } from "../components/LoadingMessage";
 import { HighScore } from "../lib/types";
 import { useGetTopScores } from "../queries/backend/scores";
 import { TimeDropdown } from "../components/TimeDropdown";
+import { useCurrentUser } from "../lib/auth";
 
 export default function Leaderboard() {
   const [selectedTime, setSelectedTime] = useState(30);
   const { isLoading, isError, data: scores } = useGetTopScores(selectedTime);
+
+  const currentUser = useCurrentUser();
+  const rank = scores
+    ? scores?.findIndex((score) => score.userId === currentUser.id) + 1
+    : undefined;
 
   return (
     <main className="flex flex-col gap-4 items-center sm:w-2/3 m-auto">
@@ -18,11 +24,16 @@ export default function Leaderboard() {
         Leaderboard
       </h1>
 
-      <div className="w-full">
+      <div className="w-full flex justify-between">
         <TimeDropdown
           selectedValue={selectedTime}
           handleChange={(event) => setSelectedTime(Number(event.target.value))}
         />
+        <div className="flex gap-2 items-center">
+          <FontAwesomeIcon icon={faMedal}/>
+          <span>Your rank:</span>
+          <span className="text-sky-500">{rank || "-"}</span>
+        </div>
       </div>
 
       {isLoading ? (
@@ -41,8 +52,15 @@ export default function Leaderboard() {
 }
 
 const HighScoreItem = ({ score, rank }: { score: HighScore; rank: number }) => {
+  const currentUser = useCurrentUser();
+  const isSelf = currentUser.id === score.userId;
+
   return (
-    <li className="w-full p-4 rounded-md bg-slate-100 flex items-center justify-between gap-2">
+    <li
+      className={`w-full p-4 rounded-md flex items-center justify-between gap-2 ${
+        isSelf ? "bg-sky-100 font-medium" : "bg-slate-100"
+      }`}
+    >
       <div className="flex gap-4 items-center">
         <span
           className={`rounded-full w-8 h-8 flex justify-center items-center  ${
