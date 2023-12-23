@@ -31,6 +31,7 @@ export default function Stats() {
         <FontAwesomeIcon icon={faChartColumn} />
         Your Stats
       </h1>
+     
       <div className="w-full flex justify-between">
         <TimeDropdown
           selectedValue={selectedTime}
@@ -41,6 +42,7 @@ export default function Stats() {
           handleChange={(event) => setSelectedSort(event.target.value)}
         />
       </div>
+     
       {isLoading ? (
         <LoadingMessage />
       ) : isError ? (

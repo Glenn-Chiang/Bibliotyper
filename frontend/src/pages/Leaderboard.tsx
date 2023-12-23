@@ -5,6 +5,7 @@ import { ErrorMessage } from "../components/ErrorMessage";
 import { LoadingMessage } from "../components/LoadingMessage";
 import { HighScore } from "../lib/types";
 import { useGetTopScores } from "../queries/backend/scores";
+import { TimeDropdown } from "../components/TimeDropdown";
 
 export default function Leaderboard() {
   const [selectedTime, setSelectedTime] = useState(30);
@@ -16,6 +17,14 @@ export default function Leaderboard() {
         <FontAwesomeIcon icon={faTrophy} />
         Leaderboard
       </h1>
+
+      <div className="w-full">
+        <TimeDropdown
+          selectedValue={selectedTime}
+          handleChange={(event) => setSelectedTime(Number(event.target.value))}
+        />
+      </div>
+
       {isLoading ? (
         <LoadingMessage />
       ) : isError ? (
