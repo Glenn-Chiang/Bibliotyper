@@ -7,9 +7,10 @@ import { AuthFormFields } from "../types/AuthFormFields";
 type FormFieldProps = {
   error?: string;
   register: UseFormRegister<AuthFormFields>;
+  disabled: boolean
 };
 
-export const EmailField = ({ error, register }: FormFieldProps) => {
+export const EmailField = ({ error, register, disabled }: FormFieldProps) => {
   return (
     <div className="flex flex-col gap-2 w-full">
       <label htmlFor="email" className="flex gap-2 items-center text-sky-500 ">
@@ -21,13 +22,14 @@ export const EmailField = ({ error, register }: FormFieldProps) => {
         id="email"
         type="email"
         {...register("email", { required: "Email is required" })}
+        disabled={disabled}
         className="bg-slate-100 p-2 rounded"
       />
     </div>
   );
 };
 
-export const PasswordField = ({ error, register }: FormFieldProps) => {
+export const PasswordField = ({ error, register, disabled }: FormFieldProps) => {
   return (
     <div className="flex flex-col gap-2 w-full">
       <label
@@ -42,6 +44,7 @@ export const PasswordField = ({ error, register }: FormFieldProps) => {
         id="password"
         type="password"
         {...register("password", { required: "Password is required" })}
+        disabled={disabled}
         className="bg-slate-100 p-2 rounded"
       />
     </div>
