@@ -1,11 +1,13 @@
-import { Link, useNavigate } from "react-router-dom";
-import { EmailField, PasswordField } from "./components/formFields";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { AuthFormFields } from "./types/AuthFormFields";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
-import { signIn } from "../../auth/signIn";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
 import { ErrorMessage } from "../../components/ErrorMessage";
+import { auth } from "../../firebase";
 import { SubmitButton } from "./components/SubmitButton";
+import { EmailField, PasswordField } from "./components/formFields";
+import { AuthFormFields } from "./types/AuthFormFields";
+import { AxiosError } from "axios";
 
 export default function SignIn() {
   const {
@@ -24,10 +26,15 @@ export default function SignIn() {
     try {
       const { email, password } = fields;
       setPending(true);
-      await signIn(email, password);
+      await signInWithEmailAndPassword(auth, email, password);
       navigate("/");
     } catch (error) {
-      setError((error as Error).message);
+      setPending(false);
+      if (error instanceof AxiosError) {
+        setError(error.response?.data);
+      } else {
+        setError((error as Error).message);
+      }
     }
   };
 

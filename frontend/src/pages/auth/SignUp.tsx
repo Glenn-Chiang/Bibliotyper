@@ -6,6 +6,7 @@ import { signUp } from "../../auth/signUp";
 import { useState } from "react";
 import { ErrorMessage } from "../../components/ErrorMessage";
 import { SubmitButton } from "./components/SubmitButton";
+import { AxiosError } from "axios";
 
 export default function SignUp() {
   const {
@@ -27,7 +28,12 @@ export default function SignUp() {
       await signUp(email, password);
       navigate("/");
     } catch (error) {
-      setError((error as Error).message);
+      setPending(false)
+      if (error instanceof AxiosError) {
+        setError(error.response?.data)
+      } else {
+        setError((error as Error).message);
+      }
     }
   };
 
