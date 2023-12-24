@@ -23,7 +23,8 @@ export const ScoreCard = ({
   const wpm = Math.round(cpm / 5);
   const accuracy = Math.round((correctKeystrokes / totalKeystrokes) * 100);
 
-  const userId = useCurrentUser()?.id || null;
+  const currentUser = useCurrentUser();
+  const userId = currentUser?.id || null;
 
   const [saved, setSaved] = useState(false);
   const saveScore = useSaveScore();
@@ -51,9 +52,11 @@ export const ScoreCard = ({
         {saved ? (
           <p className="bg-teal-100 text-teal-500 p-2 rounded">Score saved</p>
         ) : (
-          <button onClick={handleSave} className="bg-sky-100 text-sky-500">
-            Save score
-          </button>
+          currentUser && (
+            <button onClick={handleSave} className="bg-sky-100 text-sky-500">
+              Save score
+            </button>
+          )
         )}
       </section>
       <section className="sm:w-1/2 flex justify-center items-center flex-col gap-2 rounded-md p-4 border-2 text-slate-500">
@@ -68,8 +71,13 @@ export const ScoreCard = ({
 };
 
 const PersonalBest = ({ wpm, time }: { wpm: number; time: number }) => {
-  const userId = useCurrentUser()?.id || null;
+  const currentUser = useCurrentUser()
+  const userId = currentUser?.id || null;
   const { isLoading, isError, data: highScore } = useGetUserBest(userId, time);
+
+  if (!currentUser) {
+    return <p className="text-slate-500 italic">Sign in to save your scores</p>
+  }
 
   if (isLoading) {
     return <LoadingMessage />;
@@ -78,6 +86,7 @@ const PersonalBest = ({ wpm, time }: { wpm: number; time: number }) => {
   if (isError) {
     return <ErrorMessage message="Error getting high score" />;
   }
+
   return (
     <>
       {highScore.wpm && (

@@ -17,7 +17,8 @@ export default function Stats() {
   const [selectedTime, setSelectedTime] = useState(30);
   const [selectedSort, setSelectedSort] = useState("newest");
 
-  const userId = useCurrentUser()?.id || null;
+  const currentUser = useCurrentUser();
+  const userId = currentUser?.id || null;
 
   const {
     isLoading,
@@ -32,29 +33,38 @@ export default function Stats() {
         Your Stats
       </h1>
 
-      <div className="w-full flex justify-between">
-        <TimeDropdown
-          selectedValue={selectedTime}
-          handleChange={(event) => setSelectedTime(Number(event.target.value))}
-        />
-        <SortDropdown
-          selectedValue={selectedSort}
-          handleChange={(event) => setSelectedSort(event.target.value)}
-        />
-      </div>
+      {currentUser ? (
+        <>
+          <div className="w-full flex justify-between">
+            <TimeDropdown
+              selectedValue={selectedTime}
+              handleChange={(event) =>
+                setSelectedTime(Number(event.target.value))
+              }
+            />
+            <SortDropdown
+              selectedValue={selectedSort}
+              handleChange={(event) => setSelectedSort(event.target.value)}
+            />
+          </div>
 
-      {isLoading ? (
-        <LoadingMessage />
-      ) : isError ? (
-        <ErrorMessage message="Error getting scores" />
-      ) : scores?.length ? (
-        <ul className="flex flex-col gap-2 w-full items-center">
-          {scores?.map((score) => (
-            <ScoreItem key={score.id} score={score} />
-          ))}
-        </ul>
+          {isLoading ? (
+            <LoadingMessage />
+          ) : isError ? (
+            <ErrorMessage message="Error getting scores" />
+          ) : scores?.length ? (
+            <ul className="flex flex-col gap-2 w-full items-center">
+              {scores?.map((score) => (
+                <ScoreItem key={score.id} score={score} />
+              ))}
+            </ul>
+          ) : (
+            <p className="text-slate-500">No scores to display</p>
+          )}
+        </>
+        
       ) : (
-        <p className="text-slate-500">No scores to display</p>
+        <p>Sign in to view your stats</p>
       )}
     </main>
   );
