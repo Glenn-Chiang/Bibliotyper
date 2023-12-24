@@ -2,7 +2,11 @@ import axios from "axios";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 
-export const signUp = async (email: string, password: string) => {
+export const signUp = async (
+  username: string,
+  email: string,
+  password: string
+) => {
   const userCredential = await createUserWithEmailAndPassword(
     auth,
     email,
@@ -10,16 +14,14 @@ export const signUp = async (email: string, password: string) => {
   );
   const user = userCredential.user;
   const userId = user.uid;
-  const username = user.displayName;
-  const avatarUrl = user.photoURL;
 
   const res = await axios.post(
     "/users",
-    { userId, email, username, avatarUrl },
+    { userId, email, username },
     {
       baseURL: import.meta.env.VITE_API_URL,
     }
   );
 
-  return res.data
+  return res.data;
 };

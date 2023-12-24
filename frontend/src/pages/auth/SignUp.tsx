@@ -1,36 +1,58 @@
+import { AxiosError } from "axios";
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { EmailField, PasswordField } from "./components/formFields";
-import { AuthFormFields } from "./types/AuthFormFields";
 import { signUp } from "../../auth/signUp";
-import { useState } from "react";
 import { ErrorMessage } from "../../components/ErrorMessage";
 import { SubmitButton } from "./components/SubmitButton";
-import { AxiosError } from "axios";
+import {
+  EmailField,
+  PasswordField,
+  UsernameField,
+} from "./components/formFields";
+import { SignUpFields } from "./types/AuthFormFields";
 
 export default function SignUp() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<AuthFormFields>();
+  } = useForm<SignUpFields>();
+
+  const usernameError = errors.username?.message;
   const emailError = errors.email?.message;
   const passwordError = errors.password?.message;
+
+  const usernameAttrs = {
+    ...register("username", {
+      required: "Username is required",
+      maxLength: {
+        value: 25,
+        message: "Username cannot be longer than 25 characters",
+      },
+    }),
+  };
+  const emailAttrs = {
+    ...register("email", { required: "Email is required" }),
+  };
+  const passwordAttrs = {
+    ...register("password", { required: "Password is required" }),
+  };
 
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const onSubmit: SubmitHandler<AuthFormFields> = async (fields) => {
-    const { email, password } = fields;
+  const onSubmit: SubmitHandler<SignUpFields> = async (fields) => {
+    const { username, email, password } = fields;
     try {
       setPending(true);
-      await signUp(email, password);
+      await signUp(username, email, password);
       navigate("/");
     } catch (error) {
-      setPending(false)
+      setPending(false);
       if (error instanceof AxiosError) {
-        setError(error.response?.data)
+        setError(error.response?.data);
       } else {
         setError((error as Error).message);
       }
@@ -43,9 +65,18 @@ export default function SignUp() {
       className="flex flex-col items-center gap-4 "
     >
       <h1>Create an account</h1>
-      <EmailField register={register} error={emailError} disabled={pending} />
+      <UsernameField
+        attributes={usernameAttrs}
+        error={usernameError}
+        disabled={pending}
+      />
+      <EmailField
+        attributes={emailAttrs}
+        error={emailError}
+        disabled={pending}
+      />
       <PasswordField
-        register={register}
+        attributes={passwordAttrs}
         error={passwordError}
         disabled={pending}
       />
