@@ -10,8 +10,8 @@ export default function SignUp() {
   const {register, handleSubmit, formState: {errors}} = useForm<AuthFormFields>()
   const emailError = errors.email?.message
   const passwordError = errors.password?.message
-  const emailAttrs = {...register("email")}
-  const passwordAttrs = {...register("password")}
+  // const emailAttrs = {...register("email")}
+  // const passwordAttrs = {...register("password")}
 
   const [error, setError] = useState<string | null>(null)
   const navigate = useNavigate()
@@ -29,8 +29,8 @@ export default function SignUp() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col items-center gap-4 ">
       <h1>Create an account</h1>
-      <EmailField attributes={emailAttrs} error={emailError} />
-      <PasswordField attributes={passwordAttrs} error={passwordError} />
+      <EmailField register={register} error={emailError} />
+      <PasswordField register={register} error={passwordError} />
       {error && <ErrorMessage message={error}/>}
       <button className="bg-sky-500 text-white w-full">Sign Up</button>
       <p>
