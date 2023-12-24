@@ -24,24 +24,24 @@ const router = createBrowserRouter([
         path: "/leaderboard",
         element: <Leaderboard />,
       },
+      {
+        path: "/auth",
+        element: <AuthLayout />,
+        children: [
+          {
+            path: "sign-up",
+            element: <SignUp />,
+          },
+          {
+            path: "sign-in",
+            element: <SignIn />,
+          },
+          {
+            path: "sign-out",
+          },
+        ],
+      },
     ],
-  },
-  {
-    path: "/auth",
-    element: <AuthLayout/>,
-    children: [
-      {
-        path: "sign-up",
-        element: <SignUp/>
-      },
-      {
-        path: "sign-in",
-        element: <SignIn/>
-      },
-      {
-        path: "sign-out"
-      }
-    ]
   },
 ]);
 
