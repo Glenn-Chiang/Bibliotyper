@@ -1,7 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { EmailField, PasswordField } from "./components/formFields";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { AuthFormFields } from "./types/AuthFormFields";
+import { useState } from "react";
+import { signIn } from "../../auth/signIn";
+import { ErrorMessage } from "../../components/ErrorMessage";
 
 export default function SignIn() {
   const {
@@ -14,10 +17,24 @@ export default function SignIn() {
   const emailAttrs = { ...register("email") };
   const passwordAttrs = { ...register("password") };
 
+  const [error, setError] = useState<string | null>(null)
+  const navigate = useNavigate()
+
+  const onSubmit: SubmitHandler<AuthFormFields> = async (fields) => {
+    try {
+      const {email, password} = fields
+      await signIn(email, password)
+      navigate("/")
+    } catch (error) {
+      setError((error as Error).message)
+    }
+  }
+
   return (
-    <form className="flex flex-col items-center gap-4 ">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col items-center gap-4 ">
       <EmailField attributes={emailAttrs} error={emailError} />
       <PasswordField attributes={passwordAttrs} error={passwordError} />
+      {error && <ErrorMessage message={error}/>}
       <button className="bg-sky-500 text-white w-full">Sign In</button>
       <p>
         Don&apos;t have an account?{" "}
