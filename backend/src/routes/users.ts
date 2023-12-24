@@ -6,16 +6,19 @@ const usersRouter = Router();
 // Create new user
 usersRouter.post("/users", async (req, res, next) => {
   const { userId, email, username } = req.body;
-  console.log(req.body)
+  console.log(req.body);
+
   if (
     !userId ||
-    userId !== "string" ||
+    typeof userId !== "string" ||
     !email ||
-    email !== "string" ||
-    (username && username !== "string") 
+    typeof email !== "string" ||
+    !username ||
+    typeof username !== "string"
   ) {
     return res.status(400).json("Invalid username or email");
   }
+
   try {
     const user = await prisma.user.create({
       data: {
@@ -25,6 +28,7 @@ usersRouter.post("/users", async (req, res, next) => {
       },
     });
     res.json(user);
+    
   } catch (error) {
     next(error);
   }

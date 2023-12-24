@@ -51,6 +51,8 @@ export default function SignUp() {
       navigate("/");
     } catch (error) {
       setPending(false);
+      console.log(error)
+      
       if (error instanceof AxiosError) {
         setError(error.response?.data);
       } else {
