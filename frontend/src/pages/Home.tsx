@@ -1,4 +1,7 @@
-import { faRefresh } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowRightRotate,
+  faRefresh
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -46,6 +49,13 @@ export default function Home() {
     setCorrectKeystrokes(0);
   };
 
+  const handleSkip: React.MouseEventHandler<HTMLButtonElement> = async (
+    event
+  ) => {
+    event.currentTarget.blur();
+    await refetch();
+  };
+
   return (
     <GameStateContext.Provider value={gameState}>
       <main className="flex flex-col gap-4">
@@ -53,15 +63,24 @@ export default function Home() {
         <AuthorList />
 
         <div className="rounded-md p-2 border-2 flex flex-col gap-2">
-          <TimeDropdown selectedValue={timeLimit} handleChange={handleTimeLimitChange} />
+          <TimeDropdown
+            selectedValue={timeLimit}
+            handleChange={handleTimeLimitChange}
+          />
         </div>
 
         <div className="flex gap-4">
           {gameState !== "post-game" && (
-            <Timer
-              timeLimit={timeLimit}
-              endGame={() => setGamestate("post-game")}
-            />
+            <>
+              <Timer
+                timeLimit={timeLimit}
+                endGame={() => setGamestate("post-game")}
+              />
+              <button onClick={handleSkip} className="bg-sky-100 text-sky-500">
+                <FontAwesomeIcon icon={faArrowRightRotate} />
+                Skip
+              </button>
+            </>
           )}
           <button onClick={handleRestart} className="bg-sky-100 text-sky-500">
             <FontAwesomeIcon icon={faRefresh} />

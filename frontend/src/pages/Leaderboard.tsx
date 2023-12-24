@@ -41,13 +41,14 @@ export default function Leaderboard() {
         <LoadingMessage />
       ) : isError ? (
         <ErrorMessage message="Error getting scores" />
-      ) : (
+      ) : scores?.length ? (
         <ul className="flex flex-col gap-2 w-full items-center">
           {scores?.map((score, index) => (
             <HighScoreItem score={score} rank={index + 1} />
           ))}
-        </ul>
-      )}
+        </ul>)
+        : <p className="text-slate-500 italic">No scores recorded</p>
+      }
     </main>
   );
 }
@@ -70,7 +71,7 @@ const HighScoreItem = ({ score, rank }: { score: HighScore; rank: number }) => {
               : rank === 2
               ? "bg-gray-300 text-white"
               : rank === 3
-              ? "bg-amber-600 text-white"
+              ? "bg-amber-500 text-white"
               : "text-slate-500"
           }`}
         >

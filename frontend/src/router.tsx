@@ -1,12 +1,12 @@
 import { createBrowserRouter } from "react-router-dom";
-import RootLayout from "./pages/RootLayout";
 import Home from "./pages/Home";
-import Stats from "./pages/Stats";
 import Leaderboard from "./pages/Leaderboard";
-import SignUp from "./pages/auth/SignUp";
+import RootLayout from "./pages/RootLayout";
+import Stats from "./pages/Stats";
 import AuthLayout from "./pages/auth/AuthLayout";
 import SignIn from "./pages/auth/SignIn";
 import SignOut from "./pages/auth/SignOut";
+import SignUp from "./pages/auth/SignUp";
 
 const router = createBrowserRouter([
   {
@@ -39,7 +39,7 @@ const router = createBrowserRouter([
           },
           {
             path: "sign-out",
-            element: <SignOut/>
+            element: <SignOut />,
           },
         ],
       },
@@ -48,3 +48,4 @@ const router = createBrowserRouter([
 ]);
 
 export { router };
+
