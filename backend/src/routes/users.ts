@@ -31,3 +31,5 @@ usersRouter.post("/users", async (req, res, next) => {
     next(error);
   }
 });
+
+export { usersRouter };
