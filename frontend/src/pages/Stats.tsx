@@ -64,7 +64,7 @@ export default function Stats() {
         </>
         
       ) : (
-        <p>Sign in to view your stats</p>
+        <p className="italic text-slate-500">Sign in to view your stats</p>
       )}
     </main>
   );

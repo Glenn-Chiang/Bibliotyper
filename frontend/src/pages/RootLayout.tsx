@@ -1,9 +1,9 @@
 import { Outlet } from "react-router";
-import { Navbar } from "./components/Navbar";
-import { auth } from "./firebase";
+import { Navbar } from "../components/Navbar";
+import { auth } from "../firebase";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { AuthContext } from "./contexts/AuthContext";
+import { AuthContext } from "../contexts/AuthContext";
 
 function RootLayout() {
   const [user, setUser] = useState<User | null | undefined>();
