@@ -3,9 +3,9 @@ import RootLayout from "./pages/RootLayout";
 import Home from "./pages/Home";
 import Stats from "./pages/Stats";
 import Leaderboard from "./pages/Leaderboard";
-import SignUp from "./pages/SignUp";
-import AuthLayout from "./pages/AuthLayout";
-import SignIn from "./pages/SignIn";
+import SignUp from "./pages/auth/SignUp";
+import AuthLayout from "./pages/auth/AuthLayout";
+import SignIn from "./pages/auth/SignIn";
 
 const router = createBrowserRouter([
   {

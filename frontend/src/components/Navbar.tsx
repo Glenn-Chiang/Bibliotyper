@@ -26,12 +26,12 @@ export const Navbar = () => {
             <Link to={"/stats"}>
               <FontAwesomeIcon icon={faChartColumn} />
             </Link>
-            <Link to={"/sign-out"}>
+            <Link to={"/auth/sign-out"}>
               <FontAwesomeIcon icon={faSignOut} />
             </Link>
           </>
         ) : (
-          <Link to={"/sign-in"}>
+          <Link to={"/auth/sign-in"}>
             <FontAwesomeIcon icon={faSignIn} />
           </Link>
         )}
