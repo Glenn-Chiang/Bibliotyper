@@ -13,7 +13,7 @@ export default function AuthLayout() {
           />
           Welcome to Bibliotyper
         </h1>
-        <div className="flex flex-col items-center gap-4 p-4 w-full sm:w-1/2">
+        <div className="p-4 w-full sm:w-1/2">
           <Outlet />
         </div>
       </main>
