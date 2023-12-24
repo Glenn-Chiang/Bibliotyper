@@ -6,6 +6,7 @@ import Leaderboard from "./pages/Leaderboard";
 import SignUp from "./pages/auth/SignUp";
 import AuthLayout from "./pages/auth/AuthLayout";
 import SignIn from "./pages/auth/SignIn";
+import SignOut from "./pages/auth/SignOut";
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
           },
           {
             path: "sign-out",
+            element: <SignOut/>
           },
         ],
       },

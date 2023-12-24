@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
+import { QueryObserverResult } from "react-query";
 
 type QuoteboxProps = {
   quote: string;
   startGame: () => void;
-  refetch: () => void;
+  refetch: () => Promise<QueryObserverResult>;
   addKeystroke: () => void;
   addCorrectKeystroke: () => void
 };
@@ -48,11 +49,14 @@ export const Quotebox = ({ quote, startGame, refetch, addCorrectKeystroke, addKe
 
   // When user finishes typing current quote, refetch quote
   useEffect(() => {
-    if (inputText.length === quote.length) {
-      refetch();
-      setInputText("");
-      setCursorIdx(0)
+    const fetchNext = async () => {
+      if (inputText.length === quote.length) {
+        await refetch();
+        setInputText("");
+        setCursorIdx(0)
+      }
     }
+    fetchNext()
   }, [inputText, quote, refetch]);
 
   // Reset input when quote changes due to restart

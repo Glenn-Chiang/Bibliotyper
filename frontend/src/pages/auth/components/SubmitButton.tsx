@@ -2,13 +2,19 @@ import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type SubmitButtonProps = {
+  onClick?: () => void;
   pending: boolean;
   label: string;
 };
 
-export const SubmitButton = ({ pending, label }: SubmitButtonProps) => {
+export const SubmitButton = ({
+  onClick,
+  pending,
+  label,
+}: SubmitButtonProps) => {
   return (
     <button
+      onClick={onClick}
       disabled={pending}
       className={`${
         pending && "opacity-50 cursor-not-allowed"

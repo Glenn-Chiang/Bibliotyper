@@ -78,7 +78,7 @@ export default function Home() {
             <Quotebox
               quote={quote}
               startGame={() => setGamestate("in-game")}
-              refetch={() => refetch()}
+              refetch={refetch}
               addKeystroke={() => setTotalKeystrokes((prev) => prev + 1)}
               addCorrectKeystroke={() =>
                 setCorrectKeystrokes((prev) => prev + 1)
