@@ -59,7 +59,7 @@ export const Quotebox = ({ quote, startGame, refetch, addCorrectKeystroke, addKe
     fetchNext()
   }, [inputText, quote, refetch]);
 
-  // Reset input when quote changes due to restart
+  // Reset input when quote changes
   useEffect(() => {
     setInputText("");
     setCursorIdx(0)

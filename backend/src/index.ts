@@ -11,6 +11,9 @@ app.use(cors())
 app.use(express.json())
 app.use(morgan("dev"))
 
+app.get("/", (req, res) => {
+  res.json("Hello from Bibliotyper")
+})
 app.use(scoresRouter, usersRouter)
 
 const PORT = process.env.PORT || 3000

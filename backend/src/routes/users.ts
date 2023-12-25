@@ -3,10 +3,14 @@ import { prisma } from "../db.js";
 
 const usersRouter = Router();
 
+usersRouter.get("/users", async (req, res, next) => {
+  const users = await prisma.user.findMany()
+  res.json(users)
+})
+
 // Create new user
 usersRouter.post("/users", async (req, res, next) => {
   const { userId, email, username } = req.body;
-  console.log(req.body);
 
   if (
     !userId ||

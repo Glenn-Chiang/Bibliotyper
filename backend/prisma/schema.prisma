@@ -1,31 +1,31 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model Score {
-  id       String @id @default(uuid())
+  id        String   @id @default(uuid())
   dateAdded DateTime @default(now())
-  userId   String
-  user     User   @relation(fields: [userId], references: [id])
-  wpm      Int
-  accuracy Int
-  time     Int
-  author   String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  wpm       Int
+  accuracy  Int
+  time      Int
+  author    String
+
+  @@index([userId])
 }
 
 model User {
-  id     String     @id
-  email String @unique
-  username String @unique
-  avatarUrl String?
+  id         String   @id
+  email      String   @unique
+  username   String   @unique
+  avatarUrl  String?
   dateJoined DateTime @default(now())
-  scores Score[]
+  scores     Score[]
 }

@@ -1,6 +1,6 @@
 import {
   faArrowRightRotate,
-  faRefresh
+  faRefresh,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
@@ -87,7 +87,7 @@ export default function Home() {
             Restart
           </button>
         </div>
-
+        {gameState === "pre-game" && <p className="px-2">Start typing to begin</p>}
         {gameState !== "post-game" &&
           (isLoading ? (
             <LoadingMessage />

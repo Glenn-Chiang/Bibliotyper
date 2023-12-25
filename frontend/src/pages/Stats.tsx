@@ -6,7 +6,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useGetUserScores } from "../queries/backend/scores";
 import { useCurrentUser } from "../auth/useCurrentUser";
-import { useState } from "react";
+import { useState, useEffect } from 'react';
 import { LoadingMessage } from "../components/LoadingMessage";
 import { ErrorMessage } from "../components/ErrorMessage";
 import { Score } from "../lib/types";
@@ -22,9 +22,11 @@ export default function Stats() {
   const userId = currentUser?.id || null;
 
   const navigate = useNavigate();
-  if (!currentUser) {
-    navigate("/auth/sign-in");
-  }
+  useEffect(() => {
+    if (!currentUser) {
+      navigate("/auth/sign-in");
+    }
+  }, [currentUser, navigate])
 
   const {
     isLoading,
