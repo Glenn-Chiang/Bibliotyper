@@ -4,15 +4,14 @@ import {
   faClock,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useGetUserScores } from "../queries/backend/scores";
+import { useState } from 'react';
 import { useCurrentUser } from "../auth/useCurrentUser";
-import { useState, useEffect } from 'react';
-import { LoadingMessage } from "../components/LoadingMessage";
 import { ErrorMessage } from "../components/ErrorMessage";
-import { Score } from "../lib/types";
-import { TimeDropdown } from "../components/TimeDropdown";
+import { LoadingMessage } from "../components/LoadingMessage";
 import { SortDropdown } from "../components/SortDropdown";
-import { useNavigate } from "react-router";
+import { TimeDropdown } from "../components/TimeDropdown";
+import { Score } from "../lib/types";
+import { useGetUserScores } from "../queries/backend/scores";
 
 export default function Stats() {
   const [selectedTime, setSelectedTime] = useState(30);
@@ -20,13 +19,6 @@ export default function Stats() {
 
   const currentUser = useCurrentUser();
   const userId = currentUser?.id || null;
-
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (!currentUser) {
-      navigate("/auth/sign-in");
-    }
-  }, [currentUser, navigate])
 
   const {
     isLoading,

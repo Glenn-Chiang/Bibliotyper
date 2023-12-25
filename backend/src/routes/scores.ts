@@ -106,9 +106,7 @@ scoresRouter.get("/users/:userId/highScore", async (req, res, next) => {
 
 // Get top x highest scores across all users under the selected timeLimit
 scoresRouter.get("/scores", async (req, res, next) => {
-
   const time = req.query.time ? Number(req.query.time) : undefined;
-
   if (time && typeof time !== "number") {
     return res.status(400).json("Invalid time");
   }

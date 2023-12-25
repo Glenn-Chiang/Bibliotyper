@@ -7,6 +7,20 @@ export const signUp = async (
   email: string,
   password: string
 ) => {
+
+  // Check if a user with this username already exists
+  const existingUser = await axios.get(
+    "/users",{
+      baseURL: import.meta.env.VITE_BASE_URL,
+      params: {
+        username
+      }
+    }
+  )
+  if (existingUser) {
+    throw new Error("Username is already taken")
+  }
+
   const userCredential = await createUserWithEmailAndPassword(
     auth,
     email,

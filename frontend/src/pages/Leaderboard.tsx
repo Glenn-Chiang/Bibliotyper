@@ -44,7 +44,7 @@ export default function Leaderboard() {
       ) : scores?.length ? (
         <ul className="flex flex-col gap-2 w-full items-center">
           {scores?.map((score, index) => (
-            <HighScoreItem score={score} rank={index + 1} />
+            <HighScoreItem key={index} score={score} rank={index + 1} />
           ))}
         </ul>)
         : <p className="text-slate-500 italic">No scores recorded</p>

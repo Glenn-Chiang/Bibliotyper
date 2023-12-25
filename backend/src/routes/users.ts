@@ -4,7 +4,16 @@ import { prisma } from "../db.js";
 const usersRouter = Router();
 
 usersRouter.get("/users", async (req, res, next) => {
-  const users = await prisma.user.findMany()
+  const username = req.query.username
+  if (username && username !== "string") {
+    return res.status(400).json("Invalid username")
+  }
+
+  const users = await prisma.user.findMany({
+    where: {
+      username
+    }
+  })
   res.json(users)
 })
 
