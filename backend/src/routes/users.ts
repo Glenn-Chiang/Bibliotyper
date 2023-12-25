@@ -5,7 +5,7 @@ const usersRouter = Router();
 
 usersRouter.get("/users", async (req, res, next) => {
   const username = req.query.username
-  if (username && username !== "string") {
+  if (username && typeof username !== "string") {
     return res.status(400).json("Invalid username")
   }
 
@@ -46,5 +46,15 @@ usersRouter.post("/users", async (req, res, next) => {
     next(error);
   }
 });
+
+
+usersRouter.delete("/users", async (req, res, next) => {
+  try {
+    await prisma.user.deleteMany()
+    res.status(204).end()
+  } catch (error) {
+    next(error)
+  }
+})
 
 export { usersRouter };

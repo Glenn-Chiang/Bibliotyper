@@ -9,15 +9,16 @@ export const signUp = async (
 ) => {
 
   // Check if a user with this username already exists
-  const existingUser = await axios.get(
+  const existingUser = (await axios.get(
     "/users",{
-      baseURL: import.meta.env.VITE_BASE_URL,
+      baseURL: import.meta.env.VITE_API_URL,
       params: {
         username
       }
     }
-  )
-  if (existingUser) {
+  )).data
+
+  if (existingUser.length > 0) {
     throw new Error("Username is already taken")
   }
 

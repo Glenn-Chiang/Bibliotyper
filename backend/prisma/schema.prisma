@@ -12,7 +12,7 @@ model Score {
   id        String   @id @default(uuid())
   dateAdded DateTime @default(now())
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   wpm       Int
   accuracy  Int
   time      Int

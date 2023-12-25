@@ -14,7 +14,7 @@ import { Score } from "../lib/types";
 import { useGetUserScores } from "../queries/backend/scores";
 
 export default function Stats() {
-  const [selectedTime, setSelectedTime] = useState(30);
+  const [selectedTime, setSelectedTime] = useState(15);
   const [selectedSort, setSelectedSort] = useState("newest");
 
   const currentUser = useCurrentUser();

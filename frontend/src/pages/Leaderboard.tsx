@@ -9,7 +9,7 @@ import { TimeDropdown } from "../components/TimeDropdown";
 import { useCurrentUser } from "../auth/useCurrentUser";
 
 export default function Leaderboard() {
-  const [selectedTime, setSelectedTime] = useState(30);
+  const [selectedTime, setSelectedTime] = useState(15);
   const { isLoading, isError, data: scores } = useGetTopScores(selectedTime);
 
   const currentUser = useCurrentUser();
