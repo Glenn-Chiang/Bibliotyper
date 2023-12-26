@@ -1,21 +1,21 @@
 import { Router } from "express";
-import { prisma } from "../db.js";
+import { prisma } from "../lib/db.js";
 
 const usersRouter = Router();
 
 usersRouter.get("/users", async (req, res, next) => {
-  const username = req.query.username
+  const username = req.query.username;
   if (username && typeof username !== "string") {
-    return res.status(400).json("Invalid username")
+    return res.status(400).json("Invalid username");
   }
 
   const users = await prisma.user.findMany({
     where: {
-      username
-    }
-  })
-  res.json(users)
-})
+      username,
+    },
+  });
+  res.json(users);
+});
 
 // Create new user
 usersRouter.post("/users", async (req, res, next) => {
@@ -41,20 +41,18 @@ usersRouter.post("/users", async (req, res, next) => {
       },
     });
     res.json(user);
-    
   } catch (error) {
     next(error);
   }
 });
 
-
 usersRouter.delete("/users", async (req, res, next) => {
   try {
-    await prisma.user.deleteMany()
-    res.status(204).end()
+    await prisma.user.deleteMany();
+    res.status(204).end();
   } catch (error) {
-    next(error)
+    next(error);
   }
-})
+});
 
 export { usersRouter };

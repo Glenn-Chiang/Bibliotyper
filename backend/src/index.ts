@@ -4,6 +4,7 @@ import morgan from 'morgan'
 import { configDotenv } from 'dotenv'
 import { scoresRouter } from './routes/scores.js'
 import { usersRouter } from './routes/users.js'
+import { verifyToken } from './middleware/verifyToken.js'
 configDotenv()
 
 const app = express()
@@ -14,6 +15,8 @@ app.use(morgan("dev"))
 app.get("/", (req, res) => {
   res.json("Hello from Bibliotyper")
 })
+
+app.use(verifyToken)
 app.use(scoresRouter, usersRouter)
 
 const PORT = process.env.PORT || 3000
