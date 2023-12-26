@@ -5,6 +5,7 @@ import { configDotenv } from 'dotenv'
 import { scoresRouter } from './routes/scores.js'
 import { usersRouter } from './routes/users.js'
 import { verifyToken } from './middleware/verifyToken.js'
+import { initializeApp } from 'firebase-admin/app';
 configDotenv()
 
 const app = express()
@@ -16,6 +17,7 @@ app.get("/", (req, res) => {
   res.json("Hello from Bibliotyper")
 })
 
+initializeApp()
 app.use(verifyToken)
 app.use(scoresRouter, usersRouter)
 

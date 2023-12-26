@@ -1,1 +1,1 @@
-GET http://localhost:3000/users/1/highScore
+GET http://localhost:3000/users/VNRtMuLTghhTVZ3h7tl883PtQNc2/highScore

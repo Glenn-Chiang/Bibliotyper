@@ -2,16 +2,14 @@ import { Router } from "express";
 import { prisma } from "../lib/db.js";
 import { RequestWithAuth } from "../lib/types.js";
 import { validateScore, validateTimeParam, validateUserId } from "../lib/validations.js";
+import { checkAuthorization } from "../middleware/checkAuthorization.js";
 
 const scoresRouter = Router();
 
 // Get user's scores under the selected timeLimit, ordered from latest to oldest
 scoresRouter.get(
-  "/users/:userId/scores",
+  "/users/:userId/scores", checkAuthorization,
   async (req: RequestWithAuth, res, next) => {
-    const requestorId = req.userId
-
-
     const userId = req.params.userId;
     const time = Number(req.query.time) || undefined;
     const sortParam = req.query.sort;
@@ -47,7 +45,7 @@ scoresRouter.get(
   }
 );
 
-scoresRouter.post("/users/:userId/scores", async (req, res, next) => {
+scoresRouter.post("/users/:userId/scores", checkAuthorization, async (req, res, next) => {
   const userId = req.params.userId;
   const { wpm, accuracy, author, time } = req.body;
 
@@ -76,7 +74,7 @@ scoresRouter.post("/users/:userId/scores", async (req, res, next) => {
 });
 
 // Get user's high score under the selected timeLimit
-scoresRouter.get("/users/:userId/highScore", async (req, res, next) => {
+scoresRouter.get("/users/:userId/highScore", checkAuthorization, async (req, res, next) => {
   const userId = req.params.userId;
   const time = req.query.time ? Number(req.query.time) : undefined;
 
