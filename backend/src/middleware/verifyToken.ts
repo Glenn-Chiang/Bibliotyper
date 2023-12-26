@@ -9,11 +9,15 @@ export const verifyToken = async (
 ) => {
   try {
     const token = req.headers.authorization;
+    // console.log("token", token);
     const decodedToken = token ? await getAuth().verifyIdToken(token) : null;
+    // console.log("decoded token", decodedToken);
     const userId = decodedToken?.uid;
+    // console.log("userId", userId);
     req.userId = userId;
     next();
   } catch (error) {
-    return res.status(401).json({error: "Unauthorized: Invalid id token"});
+    console.log((error as Error))
+    return res.status(401).json({ error: "Unauthorized: Invalid id token" });
   }
 };

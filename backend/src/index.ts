@@ -2,11 +2,16 @@ import express from 'express'
 import cors from 'cors'
 import morgan from 'morgan'
 import { configDotenv } from 'dotenv'
+configDotenv()
+import { applicationDefault, initializeApp } from 'firebase-admin/app';
+
+initializeApp({
+  credential: applicationDefault()
+})
+
 import { scoresRouter } from './routes/scores.js'
 import { usersRouter } from './routes/users.js'
 import { verifyToken } from './middleware/verifyToken.js'
-import { initializeApp } from 'firebase-admin/app';
-configDotenv()
 
 const app = express()
 app.use(cors())
@@ -17,7 +22,6 @@ app.get("/", (req, res) => {
   res.json("Hello from Bibliotyper")
 })
 
-initializeApp()
 app.use(verifyToken)
 app.use(scoresRouter, usersRouter)
 
