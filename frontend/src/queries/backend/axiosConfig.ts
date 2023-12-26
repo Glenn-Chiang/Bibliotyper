@@ -1,7 +1,14 @@
 import axios from "axios";
+import { auth } from "../../firebase";
 
-const instance = axios.create({
+const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
 
-export { instance };
+axiosInstance.interceptors.request.use(async (config) => {
+  const token = await auth.currentUser?.getIdToken()
+  config.headers.Authorization = token
+  return config
+})
+
+export { axiosInstance };
