@@ -1,0 +1,9 @@
+POST http://localhost:3000/users/VNRtMuLTghhTVZ3h7tl883PtQNc2/scores
+Content-Type: application/json
+
+{
+    "time": 15,
+    "author": "Random",
+    "wpm": 90,
+    "accuracy": "invalid accuracy"
+}

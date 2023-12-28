@@ -1,12 +1,14 @@
-import { Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
+import { matchedData } from "express-validator";
 import { prisma } from "../../lib/db.js";
-import { RequestWithAuth } from "../../lib/types.js";
 import {
   validateScore,
-  validateTimeParam,
+  validateSortParam,
+  validateTime,
   validateUserId,
 } from "../../lib/validators.js";
 import { checkAuthorization } from "../../middleware/checkAuthorization.js";
+import { validateRequest } from "../../middleware/validateRequest.js";
 
 const scoresRouter = Router();
 
@@ -14,19 +16,12 @@ const scoresRouter = Router();
 scoresRouter.get(
   "/users/:userId/scores",
   checkAuthorization,
-  async (req: RequestWithAuth, res, next) => {
-    const userId = req.params.userId;
-    const time = Number(req.query.time) || undefined;
-    const sortParam = req.query.sort;
-    const sort =
-      sortParam === "newest" || sortParam === "highest" ? sortParam : undefined;
-
-    if (!validateUserId(userId)) {
-      return res.status(400).json("Invalid userId");
-    }
-    if (!validateTimeParam(time)) {
-      return res.status(400).json("Invalid time");
-    }
+  validateUserId(),
+  validateTime(),
+  validateSortParam(),
+  validateRequest,
+  async (req, res, next) => {
+    const { userId, time, sort } = matchedData(req);
 
     try {
       const scores = await prisma.score.findMany({
@@ -53,16 +48,12 @@ scoresRouter.get(
 scoresRouter.post(
   "/users/:userId/scores",
   checkAuthorization,
-  async (req, res, next) => {
+  validateUserId(),
+  validateScore(),
+  validateRequest,
+  async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.params.userId;
     const { wpm, accuracy, author, time } = req.body;
-
-    if (!validateUserId(userId)) {
-      return res.status(400).json("Invalid userId");
-    }
-    if (!validateScore(req.body)) {
-      return res.status(400).json("Invalid score data");
-    }
 
     try {
       const score = await prisma.score.create({
@@ -86,16 +77,11 @@ scoresRouter.post(
 scoresRouter.get(
   "/users/:userId/highScore",
   checkAuthorization,
+  validateUserId(),
+  validateTime(),
+  validateRequest,
   async (req, res, next) => {
-    const userId = req.params.userId;
-    const time = req.query.time ? Number(req.query.time) : undefined;
-
-    if (!validateUserId(userId)) {
-      return res.status(400).json("Invalid userId");
-    }
-    if (!validateTimeParam(time)) {
-      return res.status(400).json("Invalid time");
-    }
+    const { userId, time } = matchedData(req);
 
     try {
       const highScore = (
@@ -117,45 +103,46 @@ scoresRouter.get(
 );
 
 // Get top x highest scores across all users under the selected timeLimit
-scoresRouter.get("/scores", async (req, res, next) => {
-  const time = req.query.time ? Number(req.query.time) : undefined;
-  if (!validateTimeParam(time)) {
-    return res.status(400).json("Invalid time");
-  }
-
-  try {
-    const scores = await prisma.score.groupBy({
-      by: "userId",
-      _max: {
-        wpm: true,
-      },
-
-      where: {
-        time,
-      },
-      orderBy: {
+scoresRouter.get(
+  "/scores",
+  validateTime(),
+  validateRequest,
+  async (req, res, next) => {
+    const { time } = matchedData(req);
+    try {
+      const scores = await prisma.score.groupBy({
+        by: "userId",
         _max: {
-          wpm: "desc",
+          wpm: true,
         },
-      },
-    });
 
-    // Attach related users
-    const scoresWithUsers = await Promise.all(
-      scores.map(async (score) => {
-        const user = await prisma.user.findUnique({
-          where: {
-            id: score.userId,
+        where: {
+          time,
+        },
+        orderBy: {
+          _max: {
+            wpm: "desc",
           },
-        });
-        return { ...score, user };
-      })
-    );
+        },
+      });
 
-    res.json(scoresWithUsers);
-  } catch (error) {
-    next(error);
+      // Attach related users
+      const scoresWithUsers = await Promise.all(
+        scores.map(async (score) => {
+          const user = await prisma.user.findUnique({
+            where: {
+              id: score.userId,
+            },
+          });
+          return { ...score, user };
+        })
+      );
+
+      res.json(scoresWithUsers);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 export { scoresRouter };

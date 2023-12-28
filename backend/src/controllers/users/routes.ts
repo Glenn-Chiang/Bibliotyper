@@ -1,19 +1,18 @@
 import { NextFunction, Request, Response, Router } from "express";
-import { validationResult } from "express-validator";
+import { matchedData, validationResult } from "express-validator";
 import { prisma } from "../../lib/db.js";
 import {
   validateUserId,
   validateUsername,
   validateEmail,
+  validateUsernameQuery,
 } from "../../lib/validators.js";
+import { validateRequest } from "../../middleware/validateRequest.js";
 
 const usersRouter = Router();
 
-usersRouter.get("/users", async (req, res, next) => {
-  const username = req.query.username;
-  if (username && typeof username !== "string") {
-    return res.status(400).json("Invalid username");
-  }
+usersRouter.get("/users", validateUsernameQuery(), validateRequest, async (req, res, next) => {
+  const {username} = matchedData(req)
 
   const users = await prisma.user.findMany({
     where: {

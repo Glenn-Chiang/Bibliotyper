@@ -1,0 +1,1 @@
+GET http://localhost:3000/users/VNRtMuLTghhTVZ3h7tl883PtQNc2/scores?time=15&sort=invalidsort
