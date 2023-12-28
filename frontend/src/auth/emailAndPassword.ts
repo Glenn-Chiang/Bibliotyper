@@ -10,12 +10,9 @@ export const signUpWithEmailAndPassword = async (
 ) => {
   // Check if a user with this username already exists
   const existingUser = await getUserByUsername(username);
-
   if (existingUser.length > 0) {
-    throw new Error("Username is already taken");
+    throw new Error("Username is in use");
   }
-
-  // await sendSignInLinkToEmail(auth, email, actionCodeSettings)
 
   const userCredential = await createUserWithEmailAndPassword(
     auth,

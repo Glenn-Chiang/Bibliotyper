@@ -6,8 +6,14 @@ import { signUpWithEmailAndPassword } from "../../auth/emailAndPassword";
 import { ErrorMessage } from "../../components/ErrorMessage";
 import { GoogleButton } from "./components/GoogleButton";
 import { SubmitButton } from "./components/SubmitButton";
-import { EmailField, UsernameField } from "./components/formFields";
+import {
+  EmailField,
+  PasswordField,
+  UsernameField,
+} from "./components/formFields";
 import { SignUpFields } from "./types/AuthFormFields";
+import { FirebaseError } from "firebase/app";
+import { parseFirebaseError } from "../../lib/helpers/parseFirebaseError";
 
 export default function SignUp() {
   const {
@@ -18,6 +24,7 @@ export default function SignUp() {
 
   const usernameError = errors.username?.message;
   const emailError = errors.email?.message;
+  const passwordError = errors.password?.message;
 
   const usernameAttrs = {
     ...register("username", {
@@ -30,6 +37,9 @@ export default function SignUp() {
   };
   const emailAttrs = {
     ...register("email", { required: "Email is required" }),
+  };
+  const passwordAttrs = {
+    ...register("password", { required: "Password is required" }),
   };
 
   const [pending, setPending] = useState(false);
@@ -44,10 +54,11 @@ export default function SignUp() {
       navigate("/");
     } catch (error) {
       setPending(false);
-      console.log(error);
 
       if (error instanceof AxiosError) {
         setError(error.response?.data);
+      } else if (error instanceof FirebaseError) {
+        setError(parseFirebaseError(error));
       } else {
         setError((error as Error).message);
       }
@@ -59,6 +70,7 @@ export default function SignUp() {
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col items-center gap-4 "
     >
+      <h1>Create an account</h1>
       <UsernameField
         attributes={usernameAttrs}
         error={usernameError}
@@ -69,6 +81,12 @@ export default function SignUp() {
         error={emailError}
         disabled={pending}
       />
+      <PasswordField
+        attributes={passwordAttrs}
+        error={passwordError}
+        disabled={pending}
+      />
+
       {error && <ErrorMessage message={error} />}
       <SubmitButton label="Sign Up" pending={pending} />
 

@@ -4,7 +4,7 @@
 
 @layer base {
     h1 {
-        @apply text-xl flex gap-2 items-center
+        @apply text-2xl flex gap-2 items-center
     }
     button {
         @apply p-2 rounded-md transition flex gap-2 items-center justify-center
