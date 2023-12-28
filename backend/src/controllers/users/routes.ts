@@ -1,5 +1,7 @@
 import { Router } from "express";
-import { prisma } from "../lib/db.js";
+import { validationResult } from "express-validator";
+import { prisma } from "../../lib/db.js";
+import { validateEmail, validateUserId, validateUsername } from "./validators.js";
 
 const usersRouter = Router();
 
@@ -18,18 +20,12 @@ usersRouter.get("/users", async (req, res, next) => {
 });
 
 // Create new user
-usersRouter.post("/users", async (req, res, next) => {
+usersRouter.post("/users", validateEmail(), async (req, res, next) => {
   const { userId, email, username } = req.body;
 
-  if (
-    !userId ||
-    typeof userId !== "string" ||
-    !email ||
-    typeof email !== "string" ||
-    !username ||
-    typeof username !== "string"
-  ) {
-    return res.status(400).json("Invalid username or email");
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
   }
 
   try {
@@ -56,3 +52,4 @@ usersRouter.delete("/users", async (req, res, next) => {
 });
 
 export { usersRouter };
+

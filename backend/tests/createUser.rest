@@ -1,1 +1,8 @@
 POST http://localhost:3000/users
+Content-Type: "application/json"
+
+{
+    "userId": "1",
+    "username": "Glenn",
+    "email": "not an email"
+}

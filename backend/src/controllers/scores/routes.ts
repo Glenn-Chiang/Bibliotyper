@@ -1,14 +1,19 @@
 import { Router } from "express";
-import { prisma } from "../lib/db.js";
-import { RequestWithAuth } from "../lib/types.js";
-import { validateScore, validateTimeParam, validateUserId } from "../lib/validations.js";
-import { checkAuthorization } from "../middleware/checkAuthorization.js";
+import { prisma } from "../../lib/db.js";
+import { RequestWithAuth } from "../../lib/types.js";
+import {
+  validateScore,
+  validateTimeParam,
+  validateUserId,
+} from "../../lib/validations.js";
+import { checkAuthorization } from "../../middleware/checkAuthorization.js";
 
 const scoresRouter = Router();
 
 // Get user's scores under the selected timeLimit, ordered from latest to oldest
 scoresRouter.get(
-  "/users/:userId/scores", checkAuthorization,
+  "/users/:userId/scores",
+  checkAuthorization,
   async (req: RequestWithAuth, res, next) => {
     const userId = req.params.userId;
     const time = Number(req.query.time) || undefined;
@@ -45,63 +50,71 @@ scoresRouter.get(
   }
 );
 
-scoresRouter.post("/users/:userId/scores", checkAuthorization, async (req, res, next) => {
-  const userId = req.params.userId;
-  const { wpm, accuracy, author, time } = req.body;
+scoresRouter.post(
+  "/users/:userId/scores",
+  checkAuthorization,
+  async (req, res, next) => {
+    const userId = req.params.userId;
+    const { wpm, accuracy, author, time } = req.body;
 
-  if (!validateUserId(userId)) {
-    return res.status(400).json("Invalid userId")
-  }
-  if (!validateScore(req.body)) {
-    return res.status(400).json("Invalid score data");
-  }
+    if (!validateUserId(userId)) {
+      return res.status(400).json("Invalid userId");
+    }
+    if (!validateScore(req.body)) {
+      return res.status(400).json("Invalid score data");
+    }
 
-  try {
-    const score = await prisma.score.create({
-      data: {
-        userId,
-        time,
-        author,
-        wpm,
-        accuracy,
-      },
-    });
-
-    res.json(score);
-  } catch (error) {
-    next(error);
-  }
-});
-
-// Get user's high score under the selected timeLimit
-scoresRouter.get("/users/:userId/highScore", checkAuthorization, async (req, res, next) => {
-  const userId = req.params.userId;
-  const time = req.query.time ? Number(req.query.time) : undefined;
-
-  if (!validateUserId(userId)) {
-    return res.status(400).json("Invalid userId");
-  }
-  if (!validateTimeParam(time)) {
-    return res.status(400).json("Invalid time");
-  }
-
-  try {
-    const highScore = (
-      await prisma.score.aggregate({
-        _max: {
-          wpm: true,
-        },
-        where: {
+    try {
+      const score = await prisma.score.create({
+        data: {
           userId,
           time,
+          author,
+          wpm,
+          accuracy,
         },
-      })
-    )._max;
-    res.json(highScore);
-  } catch (error) {
-    next(error);
+      });
+
+      res.json(score);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
+
+// Get user's high score under the selected timeLimit
+scoresRouter.get(
+  "/users/:userId/highScore",
+  checkAuthorization,
+  async (req, res, next) => {
+    const userId = req.params.userId;
+    const time = req.query.time ? Number(req.query.time) : undefined;
+
+    if (!validateUserId(userId)) {
+      return res.status(400).json("Invalid userId");
+    }
+    if (!validateTimeParam(time)) {
+      return res.status(400).json("Invalid time");
+    }
+
+    try {
+      const highScore = (
+        await prisma.score.aggregate({
+          _max: {
+            wpm: true,
+          },
+          where: {
+            userId,
+            time,
+          },
+        })
+      )._max;
+      res.json(highScore);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 // Get top x highest scores across all users under the selected timeLimit
 scoresRouter.get("/scores", async (req, res, next) => {
