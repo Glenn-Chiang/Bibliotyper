@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router";
-import { signInWithGoogle } from "../../../auth/google";
+import { authenticateWithGoogle } from "../../../auth/google";
 
 export const GoogleButton = () => {
   const navigate = useNavigate();
 
   const handleClick = async () => {
-    await signInWithGoogle();
+    await authenticateWithGoogle();
     navigate("/");
   };
 

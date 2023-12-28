@@ -1,11 +1,16 @@
-import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
-import { createUser, getUserById } from "../queries/backend/users";
+import {
+  GoogleAuthProvider,
+  getAdditionalUserInfo,
+  getAuth,
+  signInWithPopup,
+} from "firebase/auth";
 import { redirect } from "react-router";
+import { createUser } from "../queries/backend/users";
 
 const provider = new GoogleAuthProvider();
 const auth = getAuth();
 
-export const signInWithGoogle = async () => {
+export const authenticateWithGoogle = async () => {
   const userCredential = await signInWithPopup(auth, provider);
   const user = userCredential.user;
   const userId = user.uid;
@@ -13,11 +18,10 @@ export const signInWithGoogle = async () => {
   const username = user.displayName as string;
 
   // If user is already registered, sign them in
-  const existingUser = await getUserById(userId);
-  console.log("User has already signed up. Proceeding to sign in.");
+  const isNewUser = getAdditionalUserInfo(userCredential)?.isNewUser;
+
   // If user has not registered, create an account for them
-  if (!existingUser) {
-    console.log("Creating user...");
+  if (isNewUser) {
     await createUser(userId, email, username);
     console.log("User created");
   }
