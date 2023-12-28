@@ -1,14 +1,14 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { matchedData } from "express-validator";
-import { prisma } from "../../lib/db.js";
+import { prisma } from "../lib/db.js";
 import {
   validateScore,
   validateSortParam,
   validateTime,
   validateUserId,
-} from "../../lib/validators.js";
-import { checkAuthorization } from "../../middleware/checkAuthorization.js";
-import { validateRequest } from "../../middleware/validateRequest.js";
+} from "../lib/validators.js";
+import { checkAuthorization } from "../middleware/checkAuthorization.js";
+import { validateRequest } from "../middleware/validateRequest.js";
 
 const scoresRouter = Router();
 

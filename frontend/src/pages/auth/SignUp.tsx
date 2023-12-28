@@ -2,15 +2,12 @@ import { AxiosError } from "axios";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { signUp } from "../../auth/signUp";
+import { signUp } from "../../auth/emailAndPassword";
 import { ErrorMessage } from "../../components/ErrorMessage";
 import { SubmitButton } from "./components/SubmitButton";
-import {
-  EmailField,
-  PasswordField,
-  UsernameField,
-} from "./components/formFields";
+import { EmailField, UsernameField } from "./components/formFields";
 import { SignUpFields } from "./types/AuthFormFields";
+import { signUpWithGoogle } from "../../auth/google";
 
 export default function SignUp() {
   const {
@@ -21,7 +18,6 @@ export default function SignUp() {
 
   const usernameError = errors.username?.message;
   const emailError = errors.email?.message;
-  const passwordError = errors.password?.message;
 
   const usernameAttrs = {
     ...register("username", {
@@ -34,9 +30,6 @@ export default function SignUp() {
   };
   const emailAttrs = {
     ...register("email", { required: "Email is required" }),
-  };
-  const passwordAttrs = {
-    ...register("password", { required: "Password is required" }),
   };
 
   const [pending, setPending] = useState(false);
@@ -51,8 +44,8 @@ export default function SignUp() {
       navigate("/");
     } catch (error) {
       setPending(false);
-      console.log(error)
-      
+      console.log(error);
+
       if (error instanceof AxiosError) {
         setError(error.response?.data);
       } else {
@@ -61,12 +54,16 @@ export default function SignUp() {
     }
   };
 
+  const handleGoogleClick = async () => {
+    await signUpWithGoogle()
+    navigate("/")
+  }
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col items-center gap-4 "
     >
-      <h1>Create an account</h1>
       <UsernameField
         attributes={usernameAttrs}
         error={usernameError}
@@ -77,13 +74,16 @@ export default function SignUp() {
         error={emailError}
         disabled={pending}
       />
-      <PasswordField
-        attributes={passwordAttrs}
-        error={passwordError}
-        disabled={pending}
-      />
       {error && <ErrorMessage message={error} />}
       <SubmitButton label="Sign Up" pending={pending} />
+
+      <div>OR</div>
+
+      <button type="button" onClick={handleGoogleClick} className="bg-slate-100">
+        <img src="https://google.com/favicon.ico" className="rounded-full" />
+        Continue with Google
+      </button>
+
       <p>
         Already have an account?{" "}
         <Link

@@ -1,26 +1,46 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { matchedData, validationResult } from "express-validator";
-import { prisma } from "../../lib/db.js";
+import { prisma } from "../lib/db.js";
 import {
   validateUserId,
   validateUsername,
   validateEmail,
   validateUsernameQuery,
-} from "../../lib/validators.js";
-import { validateRequest } from "../../middleware/validateRequest.js";
+} from "../lib/validators.js";
+import { validateRequest } from "../middleware/validateRequest.js";
 
 const usersRouter = Router();
 
-usersRouter.get("/users", validateUsernameQuery(), validateRequest, async (req, res, next) => {
-  const {username} = matchedData(req)
+usersRouter.get(
+  "/users",
+  validateUsernameQuery(),
+  validateRequest,
+  async (req, res, next) => {
+    const { username } = matchedData(req);
 
-  const users = await prisma.user.findMany({
-    where: {
-      username,
-    },
-  });
-  res.json(users);
-});
+    const users = await prisma.user.findMany({
+      where: {
+        username,
+      },
+    });
+    res.json(users);
+  }
+);
+
+// Get user by id
+usersRouter.get("/users/:userId", validateUserId(), validateRequest, async (req, res, next) => {
+  try {
+    const {userId} = matchedData(req)
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId
+      }
+    })
+    res.json(user)
+  } catch (error) {
+    next(error)
+  }
+})
 
 // Create new user
 usersRouter.post(
@@ -33,7 +53,7 @@ usersRouter.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    
+
     const { userId, email, username } = req.body;
 
     try {

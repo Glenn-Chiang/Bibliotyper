@@ -9,8 +9,8 @@ initializeApp({
   credential: applicationDefault(),
 });
 
-import { scoresRouter } from "./controllers/scores/routes.js";
-import { usersRouter } from "./controllers/users/routes.js";
+import { scoresRouter } from "./controllers/scores.js";
+import { usersRouter } from "./controllers/users.js";
 import { verifyToken } from "./middleware/verifyToken.js";
 
 const app = express();
