@@ -1,5 +1,5 @@
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
-import { createUser, getUserByUsername } from "../queries/backend/users";
+import { createUser } from "../queries/backend/users";
 
 const auth = getAuth();
 
@@ -8,12 +8,6 @@ export const signUpWithEmailAndPassword = async (
   email: string,
   password: string
 ) => {
-  // Check if a user with this username already exists
-  const existingUser = await getUserByUsername(username);
-  if (existingUser.length > 0) {
-    throw new Error("Username is in use");
-  }
-
   const userCredential = await createUserWithEmailAndPassword(
     auth,
     email,

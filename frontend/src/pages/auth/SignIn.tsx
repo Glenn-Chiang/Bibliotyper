@@ -9,6 +9,8 @@ import { SubmitButton } from "./components/SubmitButton";
 import { EmailField, PasswordField } from "./components/formFields";
 import { SignInFields } from "./types/AuthFormFields";
 import { GoogleButton } from "./components/GoogleButton";
+import { FirebaseError } from "firebase/app";
+import { parseFirebaseError } from "../../lib/helpers/parseFirebaseError";
 
 export default function SignIn() {
   const {
@@ -41,6 +43,8 @@ export default function SignIn() {
       setPending(false);
       if (error instanceof AxiosError) {
         setError(error.response?.data);
+      } else if (error instanceof FirebaseError) {
+        setError(parseFirebaseError(error));
       } else {
         setError((error as Error).message);
       }
@@ -52,6 +56,7 @@ export default function SignIn() {
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col items-center gap-4 "
     >
+      <h1>Sign In</h1>
       <EmailField
         attributes={emailAttrs}
         error={emailError}
