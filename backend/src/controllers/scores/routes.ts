@@ -5,7 +5,7 @@ import {
   validateScore,
   validateTimeParam,
   validateUserId,
-} from "../../lib/validations.js";
+} from "../../lib/validators.js";
 import { checkAuthorization } from "../../middleware/checkAuthorization.js";
 
 const scoresRouter = Router();

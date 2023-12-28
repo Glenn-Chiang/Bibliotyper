@@ -1,7 +1,11 @@
-import { Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import { validationResult } from "express-validator";
 import { prisma } from "../../lib/db.js";
-import { validateEmail, validateUserId, validateUsername } from "./validators.js";
+import {
+  validateUserId,
+  validateUsername,
+  validateEmail,
+} from "../../lib/validators.js";
 
 const usersRouter = Router();
 
@@ -20,27 +24,33 @@ usersRouter.get("/users", async (req, res, next) => {
 });
 
 // Create new user
-usersRouter.post("/users", validateEmail(), async (req, res, next) => {
-  const { userId, email, username } = req.body;
+usersRouter.post(
+  "/users",
+  validateEmail(),
+  validateUsername(),
+  validateUserId(),
+  async (req: Request, res: Response, next: NextFunction) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    
+    const { userId, email, username } = req.body;
 
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    try {
+      const user = await prisma.user.create({
+        data: {
+          id: userId,
+          email,
+          username,
+        },
+      });
+      res.json(user);
+    } catch (error) {
+      next(error);
+    }
   }
-
-  try {
-    const user = await prisma.user.create({
-      data: {
-        id: userId,
-        email,
-        username,
-      },
-    });
-    res.json(user);
-  } catch (error) {
-    next(error);
-  }
-});
+);
 
 usersRouter.delete("/users", async (req, res, next) => {
   try {
@@ -52,4 +62,3 @@ usersRouter.delete("/users", async (req, res, next) => {
 });
 
 export { usersRouter };
-
