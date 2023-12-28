@@ -8,6 +8,7 @@ import { auth } from "../../firebase";
 import { SubmitButton } from "./components/SubmitButton";
 import { EmailField, PasswordField } from "./components/formFields";
 import { SignInFields } from "./types/AuthFormFields";
+import { GoogleButton } from "./components/GoogleButton";
 
 export default function SignIn() {
   const {
@@ -61,8 +62,13 @@ export default function SignIn() {
         error={passwordError}
         disabled={pending}
       />
+
       {error && <ErrorMessage message={error} />}
       <SubmitButton label="Sign In" pending={pending} />
+
+      <div>OR</div>
+      <GoogleButton />
+
       <p>
         Don&apos;t have an account?{" "}
         <Link

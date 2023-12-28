@@ -3,7 +3,7 @@ import { createUser, getUserByUsername } from "../queries/backend/users";
 
 const auth = getAuth();
 
-export const signUp = async (
+export const signUpWithEmailAndPassword = async (
   username: string,
   email: string,
   password: string

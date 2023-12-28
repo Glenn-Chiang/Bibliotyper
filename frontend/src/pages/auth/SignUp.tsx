@@ -2,12 +2,12 @@ import { AxiosError } from "axios";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { signUp } from "../../auth/emailAndPassword";
+import { signUpWithEmailAndPassword } from "../../auth/emailAndPassword";
 import { ErrorMessage } from "../../components/ErrorMessage";
+import { GoogleButton } from "./components/GoogleButton";
 import { SubmitButton } from "./components/SubmitButton";
 import { EmailField, UsernameField } from "./components/formFields";
 import { SignUpFields } from "./types/AuthFormFields";
-import { signUpWithGoogle } from "../../auth/google";
 
 export default function SignUp() {
   const {
@@ -40,7 +40,7 @@ export default function SignUp() {
     const { username, email, password } = fields;
     try {
       setPending(true);
-      await signUp(username, email, password);
+      await signUpWithEmailAndPassword(username, email, password);
       navigate("/");
     } catch (error) {
       setPending(false);
@@ -53,11 +53,6 @@ export default function SignUp() {
       }
     }
   };
-
-  const handleGoogleClick = async () => {
-    await signUpWithGoogle()
-    navigate("/")
-  }
 
   return (
     <form
@@ -78,11 +73,7 @@ export default function SignUp() {
       <SubmitButton label="Sign Up" pending={pending} />
 
       <div>OR</div>
-
-      <button type="button" onClick={handleGoogleClick} className="bg-slate-100">
-        <img src="https://google.com/favicon.ico" className="rounded-full" />
-        Continue with Google
-      </button>
+      <GoogleButton />
 
       <p>
         Already have an account?{" "}
