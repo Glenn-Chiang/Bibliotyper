@@ -4,19 +4,19 @@ import { FirebaseError } from "firebase/app";
 import { User, sendEmailVerification } from "firebase/auth";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { useCurrentUser } from "../../auth/useCurrentUser";
 import { ErrorMessage } from "../../components/ErrorMessage";
-import { auth } from '../../firebase';
 import { parseFirebaseError } from "../../lib/helpers/parseFirebaseError";
 import { SubmitButton } from "./components/SubmitButton";
 
 export default function VerifyEmail() {
-  const [pending, setPending] = useState(false);
+  const [sendingEmail, setSendingEmail] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const currentUser = auth.currentUser as User;
+  const currentUser = useCurrentUser() as User;
 
   const handleClickResend = async () => {
-    setPending(true);
+    setSendingEmail(true);
     try {
       await sendEmailVerification(currentUser);
       toast("Verification email sent", { type: "success" });
@@ -27,15 +27,21 @@ export default function VerifyEmail() {
         setError((error as Error).message);
       }
     }
-    setPending(false);
+    setSendingEmail(false);
   };
 
   const [verified, setVerified] = useState(currentUser?.emailVerified)
+  const [confirmingVerification, setConfirmingVerification] = useState(false)
+
   const confirmVerification = async () => {
-    await currentUser?.getIdToken(true)
+    setConfirmingVerification(true)
+    await currentUser?.reload()
     if (currentUser?.emailVerified) {
       setVerified(true)
+    } else {
+      console.log("not verified")
     }
+    setConfirmingVerification(false)
   }
 
   if (verified) {
@@ -57,7 +63,7 @@ export default function VerifyEmail() {
       <SubmitButton
         onClick={handleClickResend}
         label="Resend"
-        pending={pending}
+        pending={sendingEmail}
       />
       {error && <ErrorMessage message={error} />}
       <p className="text-center">
@@ -67,6 +73,7 @@ export default function VerifyEmail() {
       <SubmitButton
         onClick={confirmVerification}
         label="Confirm verification"
+        pending={confirmingVerification}
       />
     </div>
   );

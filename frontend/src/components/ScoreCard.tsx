@@ -5,6 +5,7 @@ import { LoadingMessage } from "./LoadingMessage";
 import { ErrorMessage } from "./ErrorMessage";
 import { useCurrentUser } from "../auth/useCurrentUser";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 type ScoreCardProps = {
   totalKeystrokes: number;
@@ -24,7 +25,7 @@ export const ScoreCard = ({
   const accuracy = Math.round((correctKeystrokes / totalKeystrokes) * 100);
 
   const currentUser = useCurrentUser();
-  const userId = currentUser?.id || null;
+  const userId = currentUser?.uid || null;
 
   const [saved, setSaved] = useState(false);
   const saveScore = useSaveScore();
@@ -57,7 +58,10 @@ export const ScoreCard = ({
           </button>
         ) : currentUser ? (
           <p className="text-slate-500 italic">
-            Verify your email to save your scores
+            <Link to={"/auth/verify-email"} className="text-sky-500">
+              Verify your email
+            </Link>{" "}
+            to save your scores
           </p>
         ) : (
           <p className="text-slate-500 italic">Sign in to save your scores</p>
@@ -76,11 +80,11 @@ export const ScoreCard = ({
 
 const PersonalBest = ({ wpm, time }: { wpm: number; time: number }) => {
   const currentUser = useCurrentUser();
-  const userId = currentUser?.id || null;
+  const userId = currentUser?.uid || null;
   const { isLoading, isError, data: highScore } = useGetUserBest(userId, time);
 
   if (!currentUser) {
-    return <p className="text-slate-500 italic">Sign in to save your scores</p>;
+    return <p className="text-slate-500 italic">Sign in to view your scores</p>;
   }
 
   if (isLoading) {

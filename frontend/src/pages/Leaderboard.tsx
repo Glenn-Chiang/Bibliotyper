@@ -15,7 +15,7 @@ export default function Leaderboard() {
   const currentUser = useCurrentUser();
   const rank =
     scores && currentUser
-      ? scores?.findIndex((score) => score.userId === currentUser.id) + 1
+      ? scores?.findIndex((score) => score.userId === currentUser.uid) + 1
       : undefined;
 
   return (
@@ -55,7 +55,7 @@ export default function Leaderboard() {
 
 const HighScoreItem = ({ score, rank }: { score: HighScore; rank: number }) => {
   const currentUser = useCurrentUser();
-  const isSelf = currentUser?.id === score.userId;
+  const isSelf = currentUser?.uid === score.userId;
   console.log(score.user)
 
   return (
