@@ -28,7 +28,7 @@ function RootLayout() {
       <div className="mt-16 p-4">
         <Outlet />
       </div>
-      <ToastContainer/>
+      <ToastContainer position="top-right" autoClose={2000} />
     </AuthContext.Provider>
   );
 }

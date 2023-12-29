@@ -12,6 +12,7 @@ initializeApp({
 import { scoresRouter } from "./controllers/scores.js";
 import { usersRouter } from "./controllers/users.js";
 import { verifyToken } from "./middleware/verifyToken.js";
+import { errorHandler } from "./middleware/errorHandler.js";
 
 const app = express();
 app.use(cors());
@@ -24,6 +25,7 @@ app.get("/", (req, res) => {
 
 app.use(verifyToken);
 app.use(scoresRouter, usersRouter);
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

@@ -52,11 +52,12 @@ export default function SignUp() {
       setPending(true);
       await signUpWithEmailAndPassword(username, email, password);
       navigate("/auth/verify-email");
+      
     } catch (error) {
       setPending(false);
 
       if (error instanceof AxiosError) {
-        setError(error.response?.data);
+        setError(error.response?.data.message || "An error occurred");
       } else if (error instanceof FirebaseError) {
         setError(parseFirebaseError(error));
       } else {

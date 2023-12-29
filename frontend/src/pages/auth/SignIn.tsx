@@ -1,16 +1,15 @@
-import { AxiosError } from "axios";
+import { FirebaseError } from "firebase/app";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { ErrorMessage } from "../../components/ErrorMessage";
 import { auth } from "../../firebase";
+import { parseFirebaseError } from "../../lib/helpers/parseFirebaseError";
+import { GoogleButton } from "./components/GoogleButton";
 import { SubmitButton } from "./components/SubmitButton";
 import { EmailField, PasswordField } from "./components/formFields";
 import { SignInFields } from "./types/AuthFormFields";
-import { GoogleButton } from "./components/GoogleButton";
-import { FirebaseError } from "firebase/app";
-import { parseFirebaseError } from "../../lib/helpers/parseFirebaseError";
 
 export default function SignIn() {
   const {
@@ -41,9 +40,7 @@ export default function SignIn() {
       navigate("/");
     } catch (error) {
       setPending(false);
-      if (error instanceof AxiosError) {
-        setError(error.response?.data);
-      } else if (error instanceof FirebaseError) {
+      if (error instanceof FirebaseError) {
         setError(parseFirebaseError(error));
       } else {
         setError((error as Error).message);

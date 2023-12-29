@@ -8,6 +8,7 @@ import {
   validateUsernameQuery,
 } from "../lib/validators.js";
 import { validateRequest } from "../middleware/validateRequest.js";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library.js";
 
 const usersRouter = Router();
 
@@ -48,12 +49,8 @@ usersRouter.post(
   validateEmail(),
   validateUsername(),
   validateUserId(),
+  validateRequest,
   async (req: Request, res: Response, next: NextFunction) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
     const { userId, email, username } = req.body;
 
     try {
@@ -65,7 +62,11 @@ usersRouter.post(
         },
       });
       res.json(user);
+
     } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError && error.code === 'P2002') {
+        return res.status(409).json({message: "Email is already in use"})
+      }
       next(error);
     }
   }
