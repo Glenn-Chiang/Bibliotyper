@@ -56,6 +56,7 @@ export default function Leaderboard() {
 const HighScoreItem = ({ score, rank }: { score: HighScore; rank: number }) => {
   const currentUser = useCurrentUser();
   const isSelf = currentUser?.id === score.userId;
+  console.log(score.user)
 
   return (
     <li
@@ -77,7 +78,7 @@ const HighScoreItem = ({ score, rank }: { score: HighScore; rank: number }) => {
         >
           {rank}
         </span>
-        <span>{score.user.username}</span>
+        <span>{score.user?.username}</span>
       </div>
       <span className="text-xl text-sky-500">{score._max.wpm} WPM</span>
     </li>

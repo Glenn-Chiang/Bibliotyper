@@ -51,12 +51,16 @@ export const ScoreCard = ({
         </div>
         {saved ? (
           <p className="bg-teal-100 text-teal-500 p-2 rounded">Score saved</p>
+        ) : currentUser && currentUser.emailVerified ? (
+          <button onClick={handleSave} className="bg-sky-100 text-sky-500">
+            Save score
+          </button>
+        ) : currentUser ? (
+          <p className="text-slate-500 italic">
+            Verify your email to save your scores
+          </p>
         ) : (
-          currentUser && (
-            <button onClick={handleSave} className="bg-sky-100 text-sky-500">
-              Save score
-            </button>
-          )
+          <p className="text-slate-500 italic">Sign in to save your scores</p>
         )}
       </section>
       <section className="sm:w-1/2 flex justify-center items-center flex-col gap-2 rounded-md p-4 border-2 text-slate-500">
@@ -71,12 +75,12 @@ export const ScoreCard = ({
 };
 
 const PersonalBest = ({ wpm, time }: { wpm: number; time: number }) => {
-  const currentUser = useCurrentUser()
+  const currentUser = useCurrentUser();
   const userId = currentUser?.id || null;
   const { isLoading, isError, data: highScore } = useGetUserBest(userId, time);
 
   if (!currentUser) {
-    return <p className="text-slate-500 italic">Sign in to save your scores</p>
+    return <p className="text-slate-500 italic">Sign in to save your scores</p>;
   }
 
   if (isLoading) {

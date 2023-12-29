@@ -145,4 +145,15 @@ scoresRouter.get(
   }
 );
 
+
+// Delete all scores
+scoresRouter.delete("/scores", async (req, res, next) => {
+  try {
+    await prisma.score.deleteMany()
+    res.status(204).end()
+  } catch (error) {
+    next(error)
+  }
+})
+
 export { scoresRouter };
