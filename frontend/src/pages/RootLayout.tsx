@@ -4,6 +4,8 @@ import { auth } from "../firebase";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function RootLayout() {
   const [user, setUser] = useState<User | null | undefined>();
@@ -26,6 +28,7 @@ function RootLayout() {
       <div className="mt-16 p-4">
         <Outlet />
       </div>
+      <ToastContainer/>
     </AuthContext.Provider>
   );
 }

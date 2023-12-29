@@ -1,5 +1,6 @@
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, sendEmailVerification } from "firebase/auth";
 import { createUser } from "../queries/backend/users";
+import { actionCodeSettings } from "./actionCodeSettings";
 
 const auth = getAuth();
 
@@ -8,6 +9,7 @@ export const signUpWithEmailAndPassword = async (
   email: string,
   password: string
 ) => {
+  // Register user with firebase
   const userCredential = await createUserWithEmailAndPassword(
     auth,
     email,
@@ -16,5 +18,9 @@ export const signUpWithEmailAndPassword = async (
   const user = userCredential.user;
   const userId = user.uid;
 
+  // Add user record to db
   await createUser(userId, email, username);
+
+  await sendEmailVerification(user, actionCodeSettings)
+  
 };

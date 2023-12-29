@@ -7,6 +7,7 @@ import AuthLayout from "./pages/auth/AuthLayout";
 import SignIn from "./pages/auth/SignIn";
 import SignOut from "./pages/auth/SignOut";
 import SignUp from "./pages/auth/SignUp";
+import VerifyEmail from "./pages/auth/VerifyEmail";
 
 const router = createBrowserRouter([
   {
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
           {
             path: "sign-up",
             element: <SignUp />,
+          },
+          {
+            path: "verify-email",
+            element: <VerifyEmail/>
           },
           {
             path: "sign-in",

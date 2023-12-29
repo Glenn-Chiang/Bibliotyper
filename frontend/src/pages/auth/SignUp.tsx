@@ -51,7 +51,7 @@ export default function SignUp() {
     try {
       setPending(true);
       await signUpWithEmailAndPassword(username, email, password);
-      navigate("/");
+      navigate("/auth/verify-email");
     } catch (error) {
       setPending(false);
 

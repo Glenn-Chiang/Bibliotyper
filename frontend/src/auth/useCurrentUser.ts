@@ -3,6 +3,6 @@ import { AuthContext } from "../contexts/AuthContext";
 
 export const useCurrentUser = () => {
   const userAccount = useContext(AuthContext);
-  const user = userAccount ? {id: userAccount.uid, username: userAccount.displayName} : null
+  const user = userAccount ? {...userAccount, id: userAccount.uid} : null
   return user
 };
