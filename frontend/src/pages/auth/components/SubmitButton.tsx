@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type SubmitButtonProps = {
   onClick?: () => void;
-  pending: boolean;
+  pending?: boolean;
   label: string;
 };
 
