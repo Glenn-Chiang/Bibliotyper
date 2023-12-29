@@ -1,6 +1,5 @@
 import { createUserWithEmailAndPassword, getAuth, sendEmailVerification } from "firebase/auth";
 import { createUser } from "../queries/backend/users";
-import { actionCodeSettings } from "./actionCodeSettings";
 
 const auth = getAuth();
 
@@ -21,6 +20,6 @@ export const signUpWithEmailAndPassword = async (
   // Add user record to db
   await createUser(userId, email, username);
 
-  await sendEmailVerification(user, actionCodeSettings)
+  await sendEmailVerification(user)
   
 };
