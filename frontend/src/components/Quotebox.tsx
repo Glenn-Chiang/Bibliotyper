@@ -66,11 +66,14 @@ export const Quotebox = ({ quote, startGame, refetch, addCorrectKeystroke, addKe
   }, [quote]);
 
   return (
+    <>
     <p className="rounded-md p-4 bg-slate-100 text-slate-600 text-lg">
       {quoteChars.map((char, index) => (
         <Letter key={index} quoteChar={char} inputChar={inputText[index]} />
       ))}
     </p>
+    <input autoFocus/>
+    </>
   );
 };
 
