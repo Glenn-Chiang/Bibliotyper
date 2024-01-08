@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { QueryObserverResult } from "react-query";
 
 type QuoteboxProps = {
@@ -14,6 +14,8 @@ export const Quotebox = ({ quote, startGame, refetch, addCorrectKeystroke, addKe
   const quoteChars = quote.split("");
   const [cursorIdx, setCursorIdx] = useState(0);
 
+  const textRef = useRef<HTMLParagraphElement>(null)
+
   const handleKeydown = useCallback(
     (event: KeyboardEvent) => {
       // Ignore keys that are neither a character nor backspace
@@ -21,6 +23,7 @@ export const Quotebox = ({ quote, startGame, refetch, addCorrectKeystroke, addKe
 
       // Start game when user starts typing
       startGame();
+      textRef.current?.scrollIntoView()
 
       // Backspace
       if (event.key === "Backspace") {
@@ -67,12 +70,11 @@ export const Quotebox = ({ quote, startGame, refetch, addCorrectKeystroke, addKe
 
   return (
     <>
-    <p className="rounded-md p-4 bg-slate-100 text-slate-600 text-lg">
+    <p ref={textRef} className="rounded-md p-4 bg-slate-100 text-slate-600 text-lg">
       {quoteChars.map((char, index) => (
         <Letter key={index} quoteChar={char} inputChar={inputText[index]} />
       ))}
     </p>
-    <input autoFocus/>
     </>
   );
 };
