@@ -12,7 +12,7 @@ import { useCurrentUser } from "../auth/useCurrentUser";
 export const Navbar = () => {
   const currentUser = useCurrentUser();
   return (
-    <nav className="w-screen top-0 left-0 fixed bg-sky-500 text-white h-16 shadow flex items-center justify-between p-4 sm:pr-8 text-xl">
+    <nav className="z-10 w-screen top-0 left-0 fixed bg-sky-500 text-white h-16 shadow flex items-center justify-between p-4 sm:pr-8 text-xl">
       <Link to={"/"} className="flex gap-2 items-center">
         <FontAwesomeIcon icon={faKeyboard} />
         Bibliotyper
